@@ -14,4 +14,6 @@ RUN pnpm install && pnpm install typescript
 
 COPY . .
 
+EXPOSE 8000
+
 CMD ["node","./dist/index.js"]

@@ -11,7 +11,7 @@ export class Owner {
 	@Column({ type: "varchar", length: 200, unique: true })
 	email!: string;
 
-	@Column({ type: "varchar", length: 38, unique: true, select: false })
+	@Column({ type: "varchar", length: 200, unique: true, select: false })
 	password!: string;
 
 	@Column({ name: "phone_number", type: "bigint", unique: true })
@@ -22,6 +22,7 @@ export class Owner {
 		type: "varchar",
 		length: 200,
 		select: false,
+		nullable: true,
 	})
 	passwrdResetToken!: string;
 
@@ -29,6 +30,7 @@ export class Owner {
 		name: "password_reset_expires",
 		type: "timestamptz",
 		select: false,
+		nullable: true,
 	})
 	passwordResetExpires!: Date;
 }
