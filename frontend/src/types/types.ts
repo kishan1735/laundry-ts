@@ -8,10 +8,15 @@ export interface OSignupFormType {
 	phone: string;
 	email: string;
 	password: string;
-	passwordConfirm: string;
 }
 
 export interface OLoginFormType {
 	email: string;
 	password: string;
+}
+
+export interface OUpdateFormType {
+	name: string;
+	phoneNumber: string;
+	email: string;
 }

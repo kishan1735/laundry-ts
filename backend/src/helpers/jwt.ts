@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 export const signAccessToken = (id: string) => {
 	return jwt.sign({ id, type: "access" }, process.env.ACCESS_SECRET, {
-		expiresIn: "1h",
+		expiresIn: "3h",
 		issuer: process.env.API_DOMAIN,
 	});
 };

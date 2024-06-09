@@ -1,5 +1,5 @@
 import type { ErrorResponse, OLoginFormType } from "@/types/types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { type AxiosError } from "axios";
 import { useCookies } from "react-cookie";
 import { type SubmitHandler, useForm } from "react-hook-form";
@@ -13,6 +13,7 @@ function OLogin() {
 		"access_token",
 		"refresh_token",
 	]);
+	const queryClient = useQueryClient();
 	const { mutate } = useMutation({
 		mutationFn: (data: OLoginFormType) => {
 			return axios.post("http://127.0.0.1:8000/api/owner/login", data, {
@@ -23,6 +24,7 @@ function OLogin() {
 			toast.success("Login successful");
 			setCookie("access_token", res.data.accessToken);
 			setCookie("refresh_token", res.data.refreshToken);
+			queryClient.invalidateQueries({ queryKey: ["owner"] });
 			navigate("/owner/dashboard");
 		},
 		onError: (err: AxiosError<ErrorResponse>) => {
@@ -52,13 +54,17 @@ function OLogin() {
 					</h1>
 					<div className="flex items-center space-x-6">
 						<h1 className="text-white text-xl uppercase pr-12">Email</h1>
-						<input type="text" className="px-6 py-1" {...register("email")} />
+						<input
+							type="text"
+							className="px-6 py-1 text-center"
+							{...register("email")}
+						/>
 					</div>
 					<div className="flex items-center space-x-6 pb-2">
 						<h1 className="text-white text-xl uppercase">Password</h1>
 						<input
 							type="password"
-							className="px-6 py-1"
+							className="px-6 py-1 text-center"
 							{...register("password")}
 						/>
 					</div>

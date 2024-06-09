@@ -139,3 +139,28 @@ export const getOwner = async (req: OwnerRequest, res: Response) => {
 			.json({ status: "failed", message: "Internal server error" });
 	}
 };
+
+export const updateOwner = async (req: OwnerRequest, res: Response) => {
+	try {
+		const { name, email, phoneNumber } = req.body;
+		if (Number.isNaN(phoneNumber)) {
+			return res
+				.status(400)
+				.json({ status: "failed", message: "Phone number has to be a number" });
+		}
+		await ownerRepository
+			.createQueryBuilder()
+			.update(Owner)
+			.set({ name, email, phoneNumber: +phoneNumber })
+			.where("id=:id", { id: req.owner.id })
+			.execute();
+		return res
+			.status(200)
+			.json({ status: "success", message: "User updated successfully" });
+	} catch (err) {
+		console.log(err);
+		return res
+			.status(500)
+			.json({ status: "failed", message: "Internal server error" });
+	}
+};

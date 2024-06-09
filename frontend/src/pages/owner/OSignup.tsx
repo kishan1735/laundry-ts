@@ -40,7 +40,7 @@ function OSignup() {
 					<input
 						type="text"
 						className="px-8 py-1 text-center"
-						{...register("name")}
+						{...register("name", { required: true })}
 					/>
 				</div>
 				<div className="flex items-center space-x-6">
@@ -48,7 +48,7 @@ function OSignup() {
 					<input
 						type="text"
 						className="px-8 py-1 text-center"
-						{...register("email")}
+						{...register("email", { required: true })}
 					/>
 				</div>
 				<div className="flex items-center space-x-6">
@@ -58,7 +58,7 @@ function OSignup() {
 					<input
 						type="text"
 						className="px-8 py-1 text-center"
-						{...register("phoneNumber")}
+						{...register("phoneNumber", { required: true })}
 					/>
 				</div>
 				<div className="flex items-center space-x-6">
@@ -66,18 +66,9 @@ function OSignup() {
 					<input
 						type="password"
 						className="px-8 py-1 text-center"
-						{...register("password")}
+						{...register("password", { required: true })}
 					/>
 				</div>
-				<div className="flex items-center space-x-6 pb-2">
-					<h1 className="text-white text-xl uppercase">Password Confirm</h1>
-					<input
-						type="password"
-						className="px-8 py-1 text-center"
-						{...register("passwordConfirm")}
-					/>
-				</div>
-
 				<button
 					className="bg-white mx-16 py-1 text-lg font-bold uppercase hover:scale-110 duration-400"
 					type="submit"
