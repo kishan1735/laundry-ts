@@ -21,6 +21,8 @@ function OLogin() {
 			});
 		},
 		onSuccess: (res) => {
+			removeCookie("access_token");
+			removeCookie("refresh_token");
 			toast.success("Login successful");
 			setCookie("access_token", res.data.accessToken);
 			setCookie("refresh_token", res.data.refreshToken);

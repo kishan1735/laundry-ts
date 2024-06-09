@@ -164,3 +164,22 @@ export const updateOwner = async (req: OwnerRequest, res: Response) => {
 			.json({ status: "failed", message: "Internal server error" });
 	}
 };
+
+export const ownerDelete = async (req: OwnerRequest, res: Response) => {
+	try {
+		await ownerRepository
+			.createQueryBuilder()
+			.delete()
+			.from(Owner)
+			.where("id=:id", { id: req.owner.id })
+			.execute();
+		return res
+			.status(204)
+			.json({ status: "success", message: "Deleted successfully" });
+	} catch (err) {
+		console.log(err);
+		return res
+			.status(500)
+			.json({ status: "failed", message: "Error while deleting owner" });
+	}
+};

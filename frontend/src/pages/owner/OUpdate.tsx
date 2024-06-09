@@ -1,12 +1,14 @@
-import { ErrorResponse, OUpdateFormType } from "@/types/types";
+import type { ErrorResponse, OUpdateFormType } from "@/types/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
+import axios, { type AxiosError } from "axios";
 import { useEffect } from "react";
 import { useCookies } from "react-cookie";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 function OUpdate() {
+	const navigate = useNavigate();
 	const [cookies, setCookie, removeCookie] = useCookies([
 		"access_token",
 		"refresh_token",
@@ -42,7 +44,7 @@ function OUpdate() {
 		}
 	}, [reset, status]);
 
-	const { mutate } = useMutation({
+	const { mutate: updateMutate } = useMutation({
 		mutationFn: (data: OUpdateFormType) => {
 			return axios.patch("http://127.0.0.1:8000/api/owner", data, {
 				headers: {
@@ -58,9 +60,30 @@ function OUpdate() {
 			if (err.response.data.message) toast.error(err.response.data.message);
 		},
 	});
-
+	const { mutate: deleteMutate } = useMutation({
+		mutationFn: () => {
+			return axios.delete("http://127.0.0.1:8000/api/owner", {
+				headers: {
+					Authorization: `Bearer ${cookies.access_token}`,
+				},
+			});
+		},
+		onSuccess: () => {
+			removeCookie("access_token");
+			removeCookie("refresh_token");
+			toast.success("Deleted successfully");
+			navigate("/owner/login");
+		},
+		onError: (err: AxiosError<ErrorResponse>) => {
+			if (err.response.data.message) toast.error(err.response.data.message);
+		},
+	});
 	const onSubmit: SubmitHandler<OUpdateFormType> = (data) => {
-		mutate(data);
+		updateMutate(data);
+	};
+	const handleDelete = () => {
+		console.log("hi");
+		deleteMutate();
 	};
 	return (
 		<div
@@ -112,6 +135,7 @@ function OUpdate() {
 					<button
 						className="bg-white py-3 px-4 text-xl font-bold uppercase hover:scale-110 duration-400"
 						type="button"
+						onClick={handleDelete}
 					>
 						Delete
 					</button>
