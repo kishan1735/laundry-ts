@@ -6,6 +6,8 @@ import OSignup from "./pages/owner/OSignup";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "react-hot-toast";
+import ODashboard from "./pages/owner/ODashboard";
+import OProfile from "./pages/owner/OProfile";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +22,8 @@ function App() {
 					<Route element={<Owner />} path="/owner" />
 					<Route element={<OLogin />} path="/owner/login" />
 					<Route element={<OSignup />} path="/owner/signup" />
+					<Route element={<ODashboard />} path="/owner/dashboard" />
+					<Route element={<OProfile />} path="/owner/profile" />
 				</Routes>
 			</BrowserRouter>
 			<Toaster position="top-center" />

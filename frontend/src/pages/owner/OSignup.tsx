@@ -3,25 +3,13 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 import axios, { type AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-
-interface SignupFormType {
-	name: string;
-	phone: string;
-	email: string;
-	password: string;
-	passwordConfirm: string;
-}
-
-interface ErrorResponse {
-	status: string;
-	message: string;
-}
+import type { ErrorResponse, OSignupFormType } from "@/types/types";
 
 function OSignup() {
 	const { register, handleSubmit } = useForm();
 	const navigate = useNavigate();
 	const { mutate } = useMutation({
-		mutationFn: (data: SignupFormType) => {
+		mutationFn: (data: OSignupFormType) => {
 			return axios.post("http://127.0.0.1:8000/api/owner/signup", data, {
 				headers: { "Content-Type": "application/json" },
 			});
@@ -34,7 +22,7 @@ function OSignup() {
 			if (err.response.data.message) toast.error(err.response.data.message);
 		},
 	});
-	const onSubmit: SubmitHandler<SignupFormType> = (data) => {
+	const onSubmit: SubmitHandler<OSignupFormType> = (data) => {
 		mutate(data);
 	};
 	return (

@@ -16,4 +16,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["node","./dist/index.js"]
+CMD ["pnpm", "tsx", "watch", "--clear-screen=false", "src/index.ts"]
