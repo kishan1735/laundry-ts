@@ -1,4 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Shop } from "./Shop";
 
 @Entity()
 export class Owner {
@@ -24,7 +25,7 @@ export class Owner {
 		select: false,
 		nullable: true,
 	})
-	passwrdResetToken!: string;
+	passwordResetToken!: string;
 
 	@Column({
 		name: "password_reset_expires",
@@ -33,4 +34,10 @@ export class Owner {
 		nullable: true,
 	})
 	passwordResetExpires!: Date;
+
+	@OneToMany(
+		() => Shop,
+		(shop) => shop.owner,
+	)
+	shops!: Shop[];
 }

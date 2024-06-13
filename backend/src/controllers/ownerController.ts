@@ -1,18 +1,12 @@
 import type { Response, Request } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "node:crypto";
 import { ownerRepository } from "../repositories/ownerRepository";
 import { Owner } from "../entities/Owner";
 import { signRefreshToken, signAccessToken } from "../helpers/jwt";
-
-interface OwnerRequest extends Request {
-	owner: {
-		id: string;
-		name: string;
-		email: string;
-		phoneNumber: number;
-	};
-}
+import type { OwnerRequest } from "../types/types";
+import { transporter } from "../config.ts/nodemailer";
 
 export const ownerSignup = async (req: Request, res: Response) => {
 	try {
@@ -181,5 +175,86 @@ export const ownerDelete = async (req: OwnerRequest, res: Response) => {
 		return res
 			.status(500)
 			.json({ status: "failed", message: "Error while deleting owner" });
+	}
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+	try {
+		const { email } = req.body;
+		const owner = await ownerRepository
+			.createQueryBuilder("owner")
+			.where("owner.email=:email", { email })
+			.getOne();
+		if (!owner) {
+			return res.status(400).json({
+				status: "failed",
+				json: "Owner not found !! Signup and try again",
+			});
+		}
+		const resetToken = crypto.randomBytes(8).toString("hex");
+
+		owner.passwordResetToken = resetToken;
+		owner.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
+		const mailOptions = {
+			from: process.env.EMAIL,
+			to: email,
+			subject: "Password Reset OTP",
+			html: `<h1>Your reset password</h1><p>${resetToken}</p>`,
+		};
+
+		transporter.sendMail(mailOptions, (error, info) => {
+			if (error) {
+				res
+					.status(500)
+					.json({ status: "failed", message: "Error while sending email" });
+			} else {
+				console.log("Email sent: ", info.response);
+			}
+		});
+		await ownerRepository.save(owner);
+		return res
+			.status(200)
+			.json({ status: "success", message: "Email sent successfully" });
+	} catch (err) {
+		res
+			.status(500)
+			.json({ status: "failed", message: "Internal server error" });
+	}
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+	try {
+		const { token, password } = req.body;
+		const owner = await ownerRepository
+			.createQueryBuilder("owner")
+			.where("owner.password_reset_token=:token", { token })
+			.andWhere("owner.passwordResetExpires >=:current_date", {
+				current_date: new Date().toISOString(),
+			})
+			.getOne();
+		console.log(owner);
+		if (!owner) {
+			return res
+				.status(401)
+				.json({ status: "failed", message: "Token invalid or expired" });
+		}
+		if (!password) {
+			return res
+				.status(400)
+				.json({ status: "failed", message: "You have to provide password" });
+		}
+		const salt = await bcrypt.genSalt(10);
+		const hashedPassword = await bcrypt.hash(password, salt);
+		owner.password = hashedPassword;
+		owner.passwordResetExpires = null;
+		owner.passwordResetToken = null;
+		await ownerRepository.save(owner);
+		return res
+			.status(200)
+			.json({ status: "success", message: "Password reset successfully" });
+	} catch (err) {
+		res
+			.status(500)
+			.json({ status: "failed", message: "Internal server error" });
 	}
 };

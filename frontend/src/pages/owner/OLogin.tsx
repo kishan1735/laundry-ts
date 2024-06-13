@@ -16,9 +16,7 @@ function OLogin() {
 	const queryClient = useQueryClient();
 	const { mutate } = useMutation({
 		mutationFn: (data: OLoginFormType) => {
-			return axios.post("http://127.0.0.1:8000/api/owner/login", data, {
-				headers: { "Content-Type": "application/json" },
-			});
+			return axios.post("http://127.0.0.1:8000/api/owner/login", data);
 		},
 		onSuccess: (res) => {
 			removeCookie("access_token");
@@ -88,7 +86,7 @@ function OLogin() {
 					</h1>
 					<button
 						className="bg-white mx-16 py-1 text-lg font-bold uppercase hover:scale-110 duration-400 px-8"
-						//   onClick={() => navigate("/owner/forgotpassword")}
+						onClick={() => navigate("/owner/forgotpassword")}
 					>
 						Forgot Password
 					</button>
