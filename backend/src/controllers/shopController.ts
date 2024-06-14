@@ -4,6 +4,7 @@ import { Price } from "../entities/Price";
 import { Owner } from "../entities/Owner";
 import type { OwnerRequest } from "../types/types";
 import { AppDataSource } from "../db";
+import { ownerRepository } from "../repositories/ownerRepository";
 
 export const createShop = async (req: OwnerRequest, res: Response) => {
 	try {
@@ -31,7 +32,14 @@ export const createShop = async (req: OwnerRequest, res: Response) => {
 			.createQueryBuilder()
 			.insert()
 			.into(Shop)
-			.values({ name, address, phoneNumber: +phoneNumber })
+			.values({
+				name,
+				address,
+				phoneNumber: +phoneNumber,
+				satisfied: 0,
+				unsatisfied: 0,
+			})
+			.returning("*")
 			.execute();
 		const price = await queryRunner.manager
 			.createQueryBuilder()
@@ -45,7 +53,9 @@ export const createShop = async (req: OwnerRequest, res: Response) => {
 				towel: +towel,
 				bedsheet: +bedsheet,
 			})
+			.returning("*")
 			.execute();
+
 		const owner = await queryRunner.manager
 			.createQueryBuilder(Owner, "owner")
 			.where("owner.id=:id", { id: req.owner.id })
@@ -53,13 +63,13 @@ export const createShop = async (req: OwnerRequest, res: Response) => {
 		await queryRunner.manager
 			.createQueryBuilder()
 			.relation(Shop, "price")
-			.of(shop)
-			.add(price);
+			.of(shop.raw[0].id)
+			.set(price.raw[0]);
 		await queryRunner.manager
 			.createQueryBuilder()
 			.relation(Owner, "shops")
 			.of(owner)
-			.add(shop);
+			.add(shop.raw[0]);
 		await queryRunner.commitTransaction();
 		return res
 			.status(201)
@@ -67,5 +77,21 @@ export const createShop = async (req: OwnerRequest, res: Response) => {
 	} catch (err) {
 		console.log(err);
 		return res.status(500).json({ status: "failed", message: err.message });
+	}
+};
+
+export const getAllOwnerShops = async (req: OwnerRequest, res: Response) => {
+	try {
+		const owner = await ownerRepository
+			.createQueryBuilder("owner")
+			.leftJoinAndSelect("owner.shops", "shop")
+			.where("owner.id=:id", { id: req.owner.id })
+			.leftJoinAndSelect("shop.price", "price")
+			.getOne();
+		return res.status(200).json({ status: "success", shops: owner.shops });
+	} catch (err) {
+		res
+			.status(500)
+			.json({ status: "failed", message: "Internal server error" });
 	}
 };

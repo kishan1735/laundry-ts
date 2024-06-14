@@ -13,6 +13,7 @@ import OShops from "./pages/owner/OShops";
 import OShopCreate from "./pages/owner/OShopCreate";
 import OForgotPassword from "./pages/owner/OForgotPassword";
 import OResetPassword from "./pages/owner/OResetPassword";
+import OShop from "./pages/owner/OShop";
 
 const queryClient = new QueryClient();
 
@@ -27,13 +28,14 @@ function App() {
 					<Route element={<Owner />} path="/owner" />
 					<Route element={<OLogin />} path="/owner/login" />
 					<Route element={<OSignup />} path="/owner/signup" />
+					<Route element={<OForgotPassword />} path="/owner/forgotpassword" />
+					<Route element={<OResetPassword />} path="/owner/resetpassword" />
 					<Route element={<ODashboard />} path="/owner/dashboard" />
 					<Route element={<OProfile />} path="/owner/profile" />
 					<Route element={<OUpdate />} path="/owner/profile/update" />
 					<Route element={<OShops />} path="/owner/shop" />
 					<Route element={<OShopCreate />} path="/owner/shop/create" />
-					<Route element={<OForgotPassword />} path="/owner/forgotpassword" />
-					<Route element={<OResetPassword />} path="/owner/resetpassword" />
+					<Route element={<OShop />} path="/owner/shop/:id" />
 				</Routes>
 			</BrowserRouter>
 			<Toaster position="top-center" />

@@ -20,3 +20,15 @@ export interface OUpdateFormType {
 	phoneNumber: string;
 	email: string;
 }
+
+export interface ShopPriceFormType {
+	name: string;
+	address: string;
+	phoneNumber: string;
+	tshirt: string;
+	shirt: string;
+	shorts: string;
+	pant: string;
+	towel: string;
+	bedsheet: string;
+}

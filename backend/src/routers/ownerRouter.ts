@@ -9,6 +9,7 @@ import {
 	resetPassword,
 	updateOwner,
 } from "../controllers/ownerController";
+import { createShop, getAllOwnerShops } from "../controllers/shopController";
 
 const ownerRouter = express.Router();
 
@@ -19,5 +20,7 @@ ownerRouter.post("/resetpassword", resetPassword);
 ownerRouter.get("/", ownerProtect, getOwner);
 ownerRouter.patch("/", ownerProtect, updateOwner);
 ownerRouter.delete("/", ownerProtect, ownerDelete);
+ownerRouter.get("/shop", ownerProtect, getAllOwnerShops);
+ownerRouter.post("/shop/create", ownerProtect, createShop);
 
 export default ownerRouter;
