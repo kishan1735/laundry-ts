@@ -1,10 +1,11 @@
-import type { Response } from "express";
+import type { Request, Response } from "express";
 import { Shop } from "../entities/Shop";
 import { Price } from "../entities/Price";
 import { Owner } from "../entities/Owner";
 import type { OwnerRequest } from "../types/types";
 import { AppDataSource } from "../db";
 import { ownerRepository } from "../repositories/ownerRepository";
+import { shopRepository } from "../repositories/shopRepository";
 
 export const createShop = async (req: OwnerRequest, res: Response) => {
 	try {
@@ -89,6 +90,27 @@ export const getAllOwnerShops = async (req: OwnerRequest, res: Response) => {
 			.leftJoinAndSelect("shop.price", "price")
 			.getOne();
 		return res.status(200).json({ status: "success", shops: owner.shops });
+	} catch (err) {
+		res
+			.status(500)
+			.json({ status: "failed", message: "Internal server error" });
+	}
+};
+
+export const getShopById = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+		const shop = await shopRepository
+			.createQueryBuilder("shop")
+			.leftJoinAndSelect("shop.price", "price")
+			.where("shop.id=:id", { id })
+			.getOne();
+		if (!shop) {
+			return res
+				.status(404)
+				.json({ status: "failed", message: "Shop does not exist" });
+		}
+		return res.status(200).json({ status: "success", shop });
 	} catch (err) {
 		res
 			.status(500)
