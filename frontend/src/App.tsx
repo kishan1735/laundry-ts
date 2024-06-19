@@ -15,6 +15,7 @@ import OForgotPassword from "./pages/owner/OForgotPassword";
 import OResetPassword from "./pages/owner/OResetPassword";
 import OShop from "./pages/owner/OShop";
 import OShopUpdate from "./pages/owner/OShopUpdate";
+import Protect from "./components/Protect";
 
 const queryClient = new QueryClient();
 
@@ -31,14 +32,18 @@ function App() {
 					<Route element={<OSignup />} path="/owner/signup" />
 					<Route element={<OForgotPassword />} path="/owner/forgotpassword" />
 					<Route element={<OResetPassword />} path="/owner/resetpassword" />
-					<Route element={<ODashboard />} path="/owner/dashboard" />
-					<Route element={<OProfile />} path="/owner/profile" />
-					<Route element={<OUpdate />} path="/owner/profile/update" />
-					<Route element={<OShops />} path="/owner/shop" />
-					<Route element={<OShopCreate />} path="/owner/shop/create" />
-					<Route element={<OShop />} path="/owner/shop/:id" />
-					<Route element={<OShopUpdate />} path="/owner/shop/:id/update" />
 				</Routes>
+				<Protect type="owner">
+					<Routes>
+						<Route element={<ODashboard />} path="/owner/dashboard" />
+						<Route element={<OProfile />} path="/owner/profile" />
+						<Route element={<OUpdate />} path="/owner/profile/update" />
+						<Route element={<OShops />} path="/owner/shop" />
+						<Route element={<OShopCreate />} path="/owner/shop/create" />
+						<Route element={<OShop />} path="/owner/shop/:id" />
+						<Route element={<OShopUpdate />} path="/owner/shop/:id/update" />
+					</Routes>
+				</Protect>
 			</BrowserRouter>
 			<Toaster position="top-center" />
 		</QueryClientProvider>
