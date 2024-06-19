@@ -10,7 +10,7 @@ function OShop() {
 	const { data, status } = useQuery({
 		queryKey: [`owner_shop ${id}`],
 		queryFn: () => {
-			const res = axios.get(`http://127.0.0.1:8000/api/owner/shop/${id}`, {
+			const res = axios.get(`http://127.0.0.1:8000/api/owner/shop/${id}/get`, {
 				headers: { Authorization: `Bearer ${cookies.access_token}` },
 			});
 
@@ -56,6 +56,7 @@ function OShop() {
 												className={`flex text-white mx-auto space-x-8 ${
 													i === 1 ? "mt-3" : ""
 												}`}
+												key={i}
 											>
 												<h1 className=" text-xl text-yellow-200 uppercase font-black mb-2 text-end">
 													{el[0]}

@@ -14,6 +14,7 @@ import OShopCreate from "./pages/owner/OShopCreate";
 import OForgotPassword from "./pages/owner/OForgotPassword";
 import OResetPassword from "./pages/owner/OResetPassword";
 import OShop from "./pages/owner/OShop";
+import OShopUpdate from "./pages/owner/OShopUpdate";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ function App() {
 					<Route element={<OShops />} path="/owner/shop" />
 					<Route element={<OShopCreate />} path="/owner/shop/create" />
 					<Route element={<OShop />} path="/owner/shop/:id" />
+					<Route element={<OShopUpdate />} path="/owner/shop/:id/update" />
 				</Routes>
 			</BrowserRouter>
 			<Toaster position="top-center" />

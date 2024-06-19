@@ -32,13 +32,14 @@ function OShops() {
 			</button>
 			<div className="flex space-x-8">
 				{status === "success" ? (
-					data.data.shops.map((el) => {
+					data.data.shops.map((el, i) => {
 						return (
 							<div
 								className="bg-black opacity-80 flex flex-col px-12 py-8 space-y-4 border-2 border-slate-400 hover:scale-105 cursor-pointer"
 								onClick={() => {
 									navigate(`/owner/shop/${el.id}`);
 								}}
+								key={i}
 							>
 								<h1 className="text-white text-2xl uppercase mb-2 mx-auto">
 									{el.name}

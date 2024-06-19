@@ -6,6 +6,7 @@ import type { OwnerRequest } from "../types/types";
 import { AppDataSource } from "../db";
 import { ownerRepository } from "../repositories/ownerRepository";
 import { shopRepository } from "../repositories/shopRepository";
+import { priceRepository } from "../repositories/priceRepository";
 
 export const createShop = async (req: OwnerRequest, res: Response) => {
 	try {
@@ -115,5 +116,88 @@ export const getShopById = async (req: Request, res: Response) => {
 		res
 			.status(500)
 			.json({ status: "failed", message: "Internal server error" });
+	}
+};
+
+export const updateShop = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+		const { name, phoneNumber, address, price } = req.body;
+		if (Number.isNaN(phoneNumber)) {
+			return res
+				.status(400)
+				.json({ status: "failed", message: "Phone number has to be a number" });
+		}
+		for (const [key, value] of Object.entries(price)) {
+			if (Number.isNaN(value)) {
+				return res.status(400).json({
+					status: "failed",
+					message: `${key} has to be a number`,
+				});
+			}
+		}
+		await shopRepository
+			.createQueryBuilder()
+			.update(Shop)
+			.set({ name, phoneNumber, address })
+			.where("shop.id=:id", { id })
+			.execute();
+		const shop = await shopRepository
+			.createQueryBuilder("shop")
+			.leftJoinAndSelect("shop.price", "price")
+			.where("shop.id=:id", { id })
+			.getOne();
+		await priceRepository
+			.createQueryBuilder()
+			.update(Price)
+			.set({
+				shirt: +price.shirt,
+				tshirt: +price.tshirt,
+				towel: +price.towel,
+				pant: +price.pant,
+				shorts: +price.shorts,
+				bedsheet: +price.bedsheet,
+			})
+			.where("price.id=:id", { id: shop.price.id })
+			.execute();
+		return res
+			.status(200)
+			.json({ status: "success", message: "Shop updated successfully" });
+	} catch (err) {
+		res
+			.status(500)
+			.json({ status: "failed", message: "Internal server error" });
+	}
+};
+
+export const deleteShop = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+		const shop = await shopRepository
+			.createQueryBuilder("shop")
+			.leftJoinAndSelect("shop.price", "price")
+			.where("shop.id=:id", { id })
+			.getOne();
+		await shopRepository
+			.createQueryBuilder()
+			.delete()
+			.from(Shop)
+			.where("shop.id=:id", { id })
+			.execute();
+		await priceRepository
+			.createQueryBuilder()
+			.delete()
+			.from(Price)
+			.where("price.id=:id", { id: shop.price.id })
+			.execute();
+
+		return res
+			.status(204)
+			.json({ status: "success", message: "Shop deleted successfully" });
+	} catch (err) {
+		console.log(err);
+		res
+			.status(500)
+			.json({ status: "failed", message: "Error while deleting shop" });
 	}
 };

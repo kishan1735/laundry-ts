@@ -11,8 +11,10 @@ import {
 } from "../controllers/ownerController";
 import {
 	createShop,
+	deleteShop,
 	getAllOwnerShops,
 	getShopById,
+	updateShop,
 } from "../controllers/shopController";
 
 const ownerRouter = express.Router();
@@ -21,11 +23,13 @@ ownerRouter.post("/signup", ownerSignup);
 ownerRouter.post("/login", ownerLogin);
 ownerRouter.post("/forgotpassword", forgotPassword);
 ownerRouter.post("/resetpassword", resetPassword);
-ownerRouter.get("/", ownerProtect, getOwner);
-ownerRouter.patch("/", ownerProtect, updateOwner);
-ownerRouter.delete("/", ownerProtect, ownerDelete);
+ownerRouter.get("/get", ownerProtect, getOwner);
+ownerRouter.patch("/update", ownerProtect, updateOwner);
+ownerRouter.delete("/delete", ownerProtect, ownerDelete);
 ownerRouter.get("/shop", ownerProtect, getAllOwnerShops);
 ownerRouter.post("/shop/create", ownerProtect, createShop);
-ownerRouter.get("/shop/:id", ownerProtect, getShopById);
+ownerRouter.get("/shop/:id/get", ownerProtect, getShopById);
+ownerRouter.patch("/shop/:id/update", ownerProtect, updateShop);
+ownerRouter.delete("/shop/:id/delete", ownerProtect, deleteShop);
 
 export default ownerRouter;

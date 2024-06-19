@@ -24,7 +24,7 @@ function OUpdate() {
 	const { data, status } = useQuery({
 		queryKey: ["owner"],
 		queryFn: async () => {
-			const res = await axios.get("http://127.0.0.1:8000/api/owner", {
+			const res = await axios.get("http://127.0.0.1:8000/api/owner/get", {
 				headers: {
 					Authorization: `Bearer ${cookies.access_token}`,
 					"Content-Type": "application/json",
@@ -46,7 +46,7 @@ function OUpdate() {
 
 	const { mutate: updateMutate } = useMutation({
 		mutationFn: (data: OUpdateFormType) => {
-			return axios.patch("http://127.0.0.1:8000/api/owner", data, {
+			return axios.patch("http://127.0.0.1:8000/api/owner/update", data, {
 				headers: {
 					Authorization: `Bearer ${cookies.access_token}`,
 				},
@@ -62,7 +62,7 @@ function OUpdate() {
 	});
 	const { mutate: deleteMutate } = useMutation({
 		mutationFn: () => {
-			return axios.delete("http://127.0.0.1:8000/api/owner", {
+			return axios.delete("http://127.0.0.1:8000/api/owner/delete", {
 				headers: {
 					Authorization: `Bearer ${cookies.access_token}`,
 				},

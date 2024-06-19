@@ -32,3 +32,17 @@ export interface ShopPriceFormType {
 	towel: string;
 	bedsheet: string;
 }
+
+export interface ShopPriceType {
+	name: string;
+	address: string;
+	phoneNumber: string;
+	price: {
+		tshirt: number;
+		shirt: number;
+		shorts: number;
+		pant: number;
+		towel: number;
+		bedsheet: number;
+	};
+}

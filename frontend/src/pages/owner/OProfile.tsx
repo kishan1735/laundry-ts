@@ -13,7 +13,7 @@ function OProfile() {
 	const { status, data } = useQuery({
 		queryKey: ["owner"],
 		queryFn: async () => {
-			const res = await axios.get("http://127.0.0.1:8000/api/owner", {
+			const res = await axios.get("http://127.0.0.1:8000/api/owner/get", {
 				headers: {
 					Authorization: `Bearer ${cookies.access_token}`,
 					"Content-Type": "application/json",
