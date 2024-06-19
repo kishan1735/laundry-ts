@@ -1,3 +1,4 @@
+import Navbar from "@/components/Navbar";
 import type { ErrorResponse, OUpdateFormType } from "@/types/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios, { type AxiosError } from "axios";
@@ -87,9 +88,10 @@ function OUpdate() {
 	};
 	return (
 		<div
-			className="min-h-screen h-full flex flex-col items-center justify-center"
+			className="min-h-screen h-full flex flex-col items-center space-y-20"
 			id="home"
 		>
+			<Navbar type="owner" />
 			<form
 				className="bg-black opacity-80 flex flex-col p-12 space-y-6 border-2 border-slate-400"
 				onSubmit={handleSubmit(onSubmit)}

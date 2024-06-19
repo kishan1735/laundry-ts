@@ -1,3 +1,4 @@
+import Navbar from "@/components/Navbar";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect } from "react";
@@ -25,9 +26,10 @@ function OProfile() {
 
 	return (
 		<div
-			className="min-h-screen h-full flex flex-col items-center justify-center"
+			className="min-h-screen h-full flex flex-col items-center space-y-28"
 			id="home"
 		>
+			<Navbar type="owner" />
 			<div className="bg-black opacity-80 flex flex-col px-12 py-8 space-y-4 border-2 border-slate-400">
 				{status === "pending" ? (
 					<h1 className="text-white text-3xl uppercase mb-2 mx-auto">

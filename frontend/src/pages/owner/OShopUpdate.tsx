@@ -1,3 +1,4 @@
+import Navbar from "@/components/Navbar";
 import type { ErrorResponse, ShopPriceType } from "@/types/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios, { type AxiosError } from "axios";
@@ -81,8 +82,9 @@ function OShopUpdate() {
 	return (
 		<div
 			id="home"
-			className="min-h-screen h-full flex flex-col space-y-6 justify-center items-center"
+			className="min-h-screen h-full flex flex-col space-y-12 items-center"
 		>
+			<Navbar type="owner" />
 			<form
 				className="bg-black opacity-80 flex flex-col px-12 py-8 space-y-4 border-2 border-slate-400"
 				onSubmit={handleSubmit(onSubmit)}

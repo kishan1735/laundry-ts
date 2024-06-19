@@ -1,3 +1,4 @@
+import Navbar from "@/components/Navbar";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useCookies } from "react-cookie";
@@ -22,6 +23,7 @@ function OShop() {
 			id="home"
 			className="min-h-screen h-full flex flex-col space-y-6 justify-center items-center"
 		>
+			<Navbar type="owner" />
 			<div className="bg-black opacity-80 flex flex-col px-12 py-8 space-y-4 border-2 border-slate-400">
 				{status === "success" ? (
 					<>
