@@ -1,22 +1,15 @@
 import Navbar from "@/components/Navbar";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useEffect } from "react";
-import { useCookies } from "react-cookie";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function OProfile() {
-	const [cookies, setCookie, removeCookie] = useCookies([
-		"access_token",
-		"refresh_token",
-	]);
-	const navigate = useNavigate();
 	const { status, data } = useQuery({
 		queryKey: ["owner"],
 		queryFn: async () => {
 			const res = await axios.get("http://127.0.0.1:8000/api/owner/get", {
+				withCredentials: true,
 				headers: {
-					Authorization: `Bearer ${cookies.access_token}`,
 					"Content-Type": "application/json",
 				},
 			});

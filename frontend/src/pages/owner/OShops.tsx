@@ -1,17 +1,14 @@
 import Navbar from "@/components/Navbar";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useCookies } from "react-cookie";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function OShops() {
-	const navigate = useNavigate();
-	const [cookies] = useCookies(["access_token"]);
 	const { status, data } = useQuery({
 		queryKey: ["owner_shops"],
 		queryFn: async () => {
 			const res = await axios.get("http://127.0.0.1:8000/api/owner/shop", {
-				headers: { Authorization: `Bearer ${cookies.access_token}` },
+				withCredentials: true,
 			});
 			return res;
 		},
@@ -22,25 +19,21 @@ function OShops() {
 			className="min-h-screen h-full flex flex-col space-y-8 items-center"
 		>
 			<Navbar type="owner" />
-			<button
+			<Link
 				className="bg-white py-4 px-8 text-2xl font-bold uppercase hover:scale-110 duration-400 border-2 border-black opacity-80"
-				onClick={() => {
-					navigate("/owner/shop/create");
-				}}
+				to="/owner/shop/create"
 				type="button"
 			>
 				Create Shop
-			</button>
+			</Link>
 			<div className="flex space-x-8">
 				{status === "success" ? (
 					data.data.shops.map((el, i) => {
 						return (
-							<div
+							<Link
 								className="bg-black opacity-80 flex flex-col px-12 py-8 space-y-4 border-2 border-slate-400 hover:scale-105 cursor-pointer"
-								onClick={() => {
-									navigate(`/owner/shop/${el.id}`);
-								}}
-								key={i}
+								to={`/owner/shop/${el.id}`}
+								key={`shop ${i}`}
 							>
 								<h1 className="text-white text-2xl uppercase mb-2 mx-auto">
 									{el.name}
@@ -71,7 +64,7 @@ function OShops() {
 									</h1>
 									<h1 className=" text-xl uppercase mb-2">{el.unsatisfied}</h1>
 								</div>
-							</div>
+							</Link>
 						);
 					})
 				) : (

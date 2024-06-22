@@ -1,18 +1,16 @@
 import Navbar from "@/components/Navbar";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useCookies } from "react-cookie";
 import { useNavigate, useParams } from "react-router-dom";
 
 function OShop() {
 	const { id } = useParams();
 	const navigate = useNavigate();
-	const [cookies] = useCookies(["access_token"]);
 	const { data, status } = useQuery({
 		queryKey: [`owner_shop ${id}`],
 		queryFn: () => {
 			const res = axios.get(`http://127.0.0.1:8000/api/owner/shop/${id}/get`, {
-				headers: { Authorization: `Bearer ${cookies.access_token}` },
+				withCredentials: true,
 			});
 
 			return res;

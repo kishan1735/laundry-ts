@@ -4,6 +4,7 @@ import express from "express";
 import "dotenv/config";
 import { AppDataSource } from "./db";
 import ownerRouter from "./routers/ownerRouter";
+import authRouter from "./routers/authRouter";
 
 const app = express();
 
@@ -23,12 +24,13 @@ app.use(
 			"Content-Description",
 		],
 		credentials: true,
-		origin: "http://localhost:5173",
+		origin: process.env.FRONTEND_URL,
 		methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
 		preflightContinue: false,
 	}),
 );
 app.use("/api/owner", ownerRouter);
+app.use("/auth", authRouter);
 
 AppDataSource.initialize()
 	.then(async () => {

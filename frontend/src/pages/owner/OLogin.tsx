@@ -1,7 +1,6 @@
 import type { ErrorResponse, OLoginFormType } from "@/types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { type AxiosError } from "axios";
-import { useCookies } from "react-cookie";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,21 +8,15 @@ import { Link, useNavigate } from "react-router-dom";
 function OLogin() {
 	const navigate = useNavigate();
 	const { register, handleSubmit } = useForm();
-	const [cookies, setCookie, removeCookie] = useCookies([
-		"access_token",
-		"refresh_token",
-	]);
 	const queryClient = useQueryClient();
 	const { mutate } = useMutation({
 		mutationFn: (data: OLoginFormType) => {
-			return axios.post("http://127.0.0.1:8000/api/owner/login", data);
+			return axios.post("http://127.0.0.1:8000/api/owner/login", data, {
+				withCredentials: true,
+			});
 		},
-		onSuccess: (res) => {
-			removeCookie("access_token");
-			removeCookie("refresh_token");
+		onSuccess: () => {
 			toast.success("Login successful");
-			setCookie("access_token", res.data.accessToken);
-			setCookie("refresh_token", res.data.refreshToken);
 			queryClient.invalidateQueries({ queryKey: ["owner"] });
 			navigate("/owner/dashboard");
 		},
@@ -38,12 +31,12 @@ function OLogin() {
 		<div className="min-h-screen h-full flex flex-col items-center" id="home">
 			<>
 				<nav className="bg-black opacity-80 flex w-full justify-between py-4 px-6 mb-4">
-					<h1
+					<Link
 						className="text-yellow-200 uppercase font-black text-3xl flex items-center cursor-pointer"
-						onClick={() => navigate("/")}
+						to="/"
 					>
 						<p className="pr-1">LaundryTS</p> <p className="pb-1"> 🧺</p>
-					</h1>
+					</Link>
 				</nav>
 				<form
 					className="bg-black opacity-80 flex flex-col px-12 py-8 space-y-4 border-2 border-slate-400 mt-12"

@@ -2,20 +2,18 @@ import Navbar from "@/components/Navbar";
 import type { ErrorResponse, ShopPriceFormType } from "@/types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { type AxiosError } from "axios";
-import { useCookies } from "react-cookie";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 function OShopCreate() {
 	const { register, handleSubmit } = useForm();
-	const [cookies] = useCookies(["access_token"]);
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 	const { mutate } = useMutation({
 		mutationFn: (data: ShopPriceFormType) => {
 			return axios.post("http://127.0.0.1:8000/api/owner/shop/create", data, {
-				headers: { Authorization: `Bearer ${cookies.access_token}` },
+				withCredentials: true,
 			});
 		},
 		onSuccess: () => {

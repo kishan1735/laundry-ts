@@ -11,9 +11,14 @@ export class User {
 	@Column({ type: "varchar", length: 38, unique: true })
 	email!: string;
 
-	@Column({ name: "phone_number", type: "bigint", unique: true })
+	@Column({
+		name: "phone_number",
+		type: "bigint",
+		unique: true,
+		nullable: true,
+	})
 	phoneNumber!: number;
 
-	@Column({ type: "varchar", length: 300 })
+	@Column({ type: "varchar", length: 300, nullable: true })
 	address!: string;
 }

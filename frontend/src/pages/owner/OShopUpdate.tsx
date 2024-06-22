@@ -3,14 +3,12 @@ import type { ErrorResponse, ShopPriceType } from "@/types/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios, { type AxiosError } from "axios";
 import { useEffect } from "react";
-import { useCookies } from "react-cookie";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 
 function OShopUpdate() {
 	const { id } = useParams();
-	const [cookies] = useCookies(["access_token"]);
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 	const {
@@ -23,7 +21,7 @@ function OShopUpdate() {
 		queryKey: [`owner_shop ${id}`],
 		queryFn: () => {
 			const res = axios.get(`http://127.0.0.1:8000/api/owner/shop/${id}/get`, {
-				headers: { Authorization: `Bearer ${cookies.access_token}` },
+				withCredentials: true,
 			});
 
 			return res;
@@ -35,7 +33,7 @@ function OShopUpdate() {
 				`http://127.0.0.1:8000/api/owner/shop/${id}/update`,
 				data,
 				{
-					headers: { Authorization: `Bearer ${cookies.access_token}` },
+					withCredentials: true,
 				},
 			);
 		},
@@ -52,7 +50,7 @@ function OShopUpdate() {
 	const { mutate: deleteMutate } = useMutation({
 		mutationFn: () => {
 			return axios.delete(`http://127.0.0.1:8000/api/owner/shop/${id}/delete`, {
-				headers: { Authorization: `Bearer ${cookies.access_token}` },
+				withCredentials: true,
 			});
 		},
 		onSuccess: () => {

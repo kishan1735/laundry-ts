@@ -10,7 +10,7 @@ function Home() {
 				LaundryTS
 			</h1>
 			<Link
-				to="/user/dashboard"
+				to="/user"
 				className="bg-white opacity-75 text-6xl font-bold uppercase px-8 py-10 border-2 border-black hover:scale-110 duration-200"
 			>
 				User

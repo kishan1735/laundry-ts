@@ -77,11 +77,23 @@ export const ownerLogin = async (req: Request, res: Response) => {
 		const accessToken = await signAccessToken(owner.id);
 		const refreshToken = await signRefreshToken(owner.id);
 
+		res.cookie("accessToken", accessToken, {
+			httpOnly: true,
+			secure: false,
+			sameSite: "none",
+			maxAge: 1 * 60 * 60 * 1000,
+		});
+
+		res.cookie("refreshToken", accessToken, {
+			httpOnly: true,
+			secure: false,
+			sameSite: "none",
+			maxAge: 1 * 60 * 60 * 1000,
+		});
+
 		return res.json({
 			status: "success",
 			message: "Logged in successfully",
-			accessToken,
-			refreshToken,
 		});
 	} catch (err) {
 		console.log(err);
@@ -91,18 +103,11 @@ export const ownerLogin = async (req: Request, res: Response) => {
 
 export const ownerProtect = async (req: OwnerRequest, res: Response, next) => {
 	try {
-		let accessToken: string;
-		if (!req.headers.authorization) {
+		const accessToken = req.cookies.accessToken;
+		if (!accessToken) {
 			return res
 				.status(403)
-				.json({ status: "failed", message: "Missing authorizartion tokens" });
-		}
-
-		if (
-			req.headers.authorization.split(" ")[0] === "Bearer" &&
-			req.headers.authorization.split(" ")[1]
-		) {
-			accessToken = req.headers.authorization.split(" ")[1];
+				.json({ status: "success", message: "Login and try again" });
 		}
 		const decoded = jwt.verify(accessToken, process.env.ACCESS_SECRET);
 		if (!decoded.id) {
@@ -232,7 +237,6 @@ export const resetPassword = async (req: Request, res: Response) => {
 				current_date: new Date().toISOString(),
 			})
 			.getOne();
-		console.log(owner);
 		if (!owner) {
 			return res
 				.status(401)
@@ -256,5 +260,15 @@ export const resetPassword = async (req: Request, res: Response) => {
 		res
 			.status(500)
 			.json({ status: "failed", message: "Internal server error" });
+	}
+};
+
+export const logout = async (req: Request, res: Response) => {
+	try {
+		res.clearCookie("accessToken");
+		res.clearCookie("refreshToken");
+		return res.json({ status: "success", message: "Logged out successfully" });
+	} catch (err) {
+		return res.status(500).json({ status: "failed", message: err.message });
 	}
 };

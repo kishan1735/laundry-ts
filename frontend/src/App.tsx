@@ -16,6 +16,9 @@ import OResetPassword from "./pages/owner/OResetPassword";
 import OShop from "./pages/owner/OShop";
 import OShopUpdate from "./pages/owner/OShopUpdate";
 import Protect from "./components/Protect";
+import User from "./pages/user/User";
+import ULogin from "./pages/user/ULogin";
+import UDashboard from "./pages/user/UDashboard";
 
 const queryClient = new QueryClient();
 
@@ -26,24 +29,26 @@ function App() {
 			<BrowserRouter>
 				<Routes>
 					<Route element={<Home />} path="/" />
-					//Owner
 					<Route element={<Owner />} path="/owner" />
 					<Route element={<OLogin />} path="/owner/login" />
 					<Route element={<OSignup />} path="/owner/signup" />
 					<Route element={<OForgotPassword />} path="/owner/forgotpassword" />
 					<Route element={<OResetPassword />} path="/owner/resetpassword" />
+					<Route element={<User />} path="/user" />
+					<Route element={<ULogin />} path="/user/login" />
 				</Routes>
-				<Protect type="owner">
-					<Routes>
-						<Route element={<ODashboard />} path="/owner/dashboard" />
-						<Route element={<OProfile />} path="/owner/profile" />
-						<Route element={<OUpdate />} path="/owner/profile/update" />
-						<Route element={<OShops />} path="/owner/shop" />
-						<Route element={<OShopCreate />} path="/owner/shop/create" />
-						<Route element={<OShop />} path="/owner/shop/:id" />
-						<Route element={<OShopUpdate />} path="/owner/shop/:id/update" />
-					</Routes>
-				</Protect>
+				<Routes>
+					<Route element={<ODashboard />} path="/owner/dashboard" />
+					<Route element={<OProfile />} path="/owner/profile" />
+					<Route element={<OUpdate />} path="/owner/profile/update" />
+					<Route element={<OShops />} path="/owner/shop" />
+					<Route element={<OShopCreate />} path="/owner/shop/create" />
+					<Route element={<OShop />} path="/owner/shop/:id" />
+					<Route element={<OShopUpdate />} path="/owner/shop/:id/update" />
+				</Routes>
+				<Routes>
+					<Route element={<UDashboard />} path="/user/dashboard" />
+				</Routes>
 			</BrowserRouter>
 			<Toaster position="top-center" />
 		</QueryClientProvider>

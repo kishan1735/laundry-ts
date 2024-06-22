@@ -3,17 +3,12 @@ import type { ErrorResponse, OUpdateFormType } from "@/types/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios, { type AxiosError } from "axios";
 import { useEffect } from "react";
-import { useCookies } from "react-cookie";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 function OUpdate() {
 	const navigate = useNavigate();
-	const [cookies, setCookie, removeCookie] = useCookies([
-		"access_token",
-		"refresh_token",
-	]);
 	const queryClient = useQueryClient();
 	const { register, reset, handleSubmit } = useForm({
 		defaultValues: {
@@ -26,10 +21,7 @@ function OUpdate() {
 		queryKey: ["owner"],
 		queryFn: async () => {
 			const res = await axios.get("http://127.0.0.1:8000/api/owner/get", {
-				headers: {
-					Authorization: `Bearer ${cookies.access_token}`,
-					"Content-Type": "application/json",
-				},
+				withCredentials: true,
 			});
 
 			return res;
@@ -48,9 +40,7 @@ function OUpdate() {
 	const { mutate: updateMutate } = useMutation({
 		mutationFn: (data: OUpdateFormType) => {
 			return axios.patch("http://127.0.0.1:8000/api/owner/update", data, {
-				headers: {
-					Authorization: `Bearer ${cookies.access_token}`,
-				},
+				withCredentials: true,
 			});
 		},
 		onSuccess: () => {
@@ -64,14 +54,10 @@ function OUpdate() {
 	const { mutate: deleteMutate } = useMutation({
 		mutationFn: () => {
 			return axios.delete("http://127.0.0.1:8000/api/owner/delete", {
-				headers: {
-					Authorization: `Bearer ${cookies.access_token}`,
-				},
+				withCredentials: true,
 			});
 		},
 		onSuccess: () => {
-			removeCookie("access_token");
-			removeCookie("refresh_token");
 			toast.success("Deleted successfully");
 			navigate("/owner/login");
 		},
