@@ -74,8 +74,11 @@ export const ownerLogin = async (req: Request, res: Response) => {
 				.status(400)
 				.json({ status: "success", message: "Incorrect password" });
 		}
-		const accessToken = await signAccessToken(owner.id);
-		const refreshToken = await signRefreshToken(owner.id);
+		const accessToken = await signAccessToken(owner.id, "owner");
+		const refreshToken = await signRefreshToken(owner.id, "owner");
+
+		res.clearCookie("accessToken");
+		res.clearCookie("refreshToken");
 
 		res.cookie("accessToken", accessToken, {
 			httpOnly: true,
@@ -84,11 +87,11 @@ export const ownerLogin = async (req: Request, res: Response) => {
 			maxAge: 1 * 60 * 60 * 1000,
 		});
 
-		res.cookie("refreshToken", accessToken, {
+		res.cookie("refreshToken", refreshToken, {
 			httpOnly: true,
 			secure: false,
 			sameSite: "none",
-			maxAge: 1 * 60 * 60 * 1000,
+			maxAge: 24 * 60 * 60 * 1000,
 		});
 
 		return res.json({
