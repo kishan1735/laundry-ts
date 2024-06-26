@@ -5,7 +5,7 @@ import {
 	userProtect,
 	userUpdate,
 } from "../controllers/userController";
-import { getAllShops } from "../controllers/shopController";
+import { getAllShops, getShopById } from "../controllers/shopController";
 
 const userRouter = express.Router();
 
@@ -13,5 +13,6 @@ userRouter.get("/get", userProtect, getUser);
 userRouter.patch("/update", userProtect, userUpdate);
 userRouter.delete("/delete", userProtect, userDelete);
 userRouter.get("/shop", getAllShops);
+userRouter.get("/shop/:id/get", getShopById);
 
 export default userRouter;

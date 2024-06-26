@@ -201,3 +201,14 @@ export const deleteShop = async (req: Request, res: Response) => {
 			.json({ status: "failed", message: "Error while deleting shop" });
 	}
 };
+
+export const getAllShops = async (req: Request, res: Response) => {
+	try {
+		const shops = await shopRepository.createQueryBuilder().getMany();
+		return res.status(200).json({ status: "success", shops });
+	} catch (err) {
+		res
+			.status(500)
+			.json({ status: "failed", message: "Internal server error" });
+	}
+};
