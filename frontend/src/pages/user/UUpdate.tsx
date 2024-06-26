@@ -7,7 +7,7 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-function OUpdate() {
+function UUpdate() {
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 	const { register, reset, handleSubmit } = useForm({
@@ -18,9 +18,9 @@ function OUpdate() {
 		},
 	});
 	const { data, status } = useQuery({
-		queryKey: ["owner"],
+		queryKey: ["user"],
 		queryFn: async () => {
-			const res = await axios.get("http://127.0.0.1:8000/api/owner/get", {
+			const res = await axios.get("http://127.0.0.1:8000/api/user/get", {
 				withCredentials: true,
 			});
 
@@ -30,22 +30,22 @@ function OUpdate() {
 	useEffect(() => {
 		if (status === "success") {
 			reset({
-				name: data.data.owner.name,
-				email: data.data.owner.email,
-				phoneNumber: data.data.owner.phoneNumber,
+				name: data.data.user.name,
+				email: data.data.user.email,
+				phoneNumber: data.data.user.phoneNumber,
 			});
 		}
 	}, [reset, status]);
 
 	const { mutate: updateMutate } = useMutation({
 		mutationFn: (data: OUpdateFormType) => {
-			return axios.patch("http://127.0.0.1:8000/api/owner/update", data, {
+			return axios.patch("http://127.0.0.1:8000/api/user/update", data, {
 				withCredentials: true,
 			});
 		},
 		onSuccess: () => {
 			toast.success("User updated successfully");
-			queryClient.invalidateQueries({ queryKey: ["owner"] });
+			queryClient.invalidateQueries({ queryKey: ["user"] });
 		},
 		onError: (err: AxiosError<ErrorResponse>) => {
 			if (err.response.data.message) toast.error(err.response.data.message);
@@ -53,14 +53,13 @@ function OUpdate() {
 	});
 	const { mutate: deleteMutate } = useMutation({
 		mutationFn: () => {
-			return axios.delete("http://127.0.0.1:8000/api/owner/delete", {
+			return axios.delete("http://127.0.0.1:8000/api/user/delete", {
 				withCredentials: true,
 			});
 		},
 		onSuccess: () => {
 			toast.success("Deleted successfully");
-			queryClient.invalidateQueries({ queryKey: ["owner"] });
-			navigate("/owner/login");
+			navigate("/user/login");
 		},
 		onError: (err: AxiosError<ErrorResponse>) => {
 			if (err.response.data.message) toast.error(err.response.data.message);
@@ -78,13 +77,13 @@ function OUpdate() {
 			className="min-h-screen h-full flex flex-col items-center space-y-20"
 			id="home"
 		>
-			<Navbar type="owner" />
+			<Navbar type="user" />
 			<form
 				className="bg-black opacity-80 flex flex-col p-12 space-y-6 border-2 border-slate-400"
 				onSubmit={handleSubmit(onSubmit)}
 			>
 				<h1 className="text-white text-3xl uppercase mb-2 mx-auto">
-					Update Owner
+					Update User
 				</h1>
 				<div className="flex justify-start items-center space-x-48">
 					<h1 className="text-xl uppercase font-black text-yellow-200">Name</h1>
@@ -92,16 +91,6 @@ function OUpdate() {
 						type="text"
 						className="text-lg font-black text-center py-1"
 						{...register("name", { required: true })}
-					/>
-				</div>
-				<div className="flex justify-start items-center space-x-48">
-					<h1 className="text-xl uppercase font-black text-yellow-200">
-						Email
-					</h1>
-					<input
-						type="text"
-						className="text-lg font-black text-center py-1"
-						{...register("email", { required: true })}
 					/>
 				</div>
 				<div className="flex justify-start items-center space-x-20">
@@ -134,4 +123,4 @@ function OUpdate() {
 	);
 }
 
-export default OUpdate;
+export default UUpdate;

@@ -19,6 +19,9 @@ import Protect from "./components/Protect";
 import User from "./pages/user/User";
 import ULogin from "./pages/user/ULogin";
 import UDashboard from "./pages/user/UDashboard";
+import UProfile from "./pages/user/UProfile";
+import UUpdate from "./pages/user/UUpdate";
+import UShops from "./pages/user/UShops";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +51,9 @@ function App() {
 				</Routes>
 				<Routes>
 					<Route element={<UDashboard />} path="/user/dashboard" />
+					<Route element={<UProfile />} path="/user/profile" />
+					<Route element={<UUpdate />} path="/user/profile/update" />
+					<Route element={<UShops />} path="/user/shop" />
 				</Routes>
 			</BrowserRouter>
 			<Toaster position="top-center" />

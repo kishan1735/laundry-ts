@@ -14,7 +14,7 @@ function Navbar({ type }: { type: string }) {
 			});
 		},
 		onSuccess: () => {
-			navigate("/owner/login");
+			navigate(`/${type}/login`);
 			toast.success("Logged out successfully");
 			queryClient.invalidateQueries({ queryKey: [`${type}`] });
 		},

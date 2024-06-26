@@ -8,3 +8,14 @@ export interface OwnerRequest extends Request {
 		phoneNumber: number;
 	};
 }
+
+export interface UserRequest extends Request {
+	user: {
+		id: string;
+		name: string;
+		email: string;
+		profile: string;
+		address?: string;
+		phoneNumber?: number;
+	};
+}

@@ -5,6 +5,7 @@ import "dotenv/config";
 import { AppDataSource } from "./db";
 import ownerRouter from "./routers/ownerRouter";
 import authRouter from "./routers/authRouter";
+import userRouter from "./routers/userRouter";
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use(
 	}),
 );
 app.use("/api/owner", ownerRouter);
+app.use("/api/user", userRouter);
 app.use("/auth", authRouter);
 
 AppDataSource.initialize()

@@ -1,6 +1,11 @@
 import type { Request, Response } from "express";
 import { generators, type TokenSet } from "openid-client";
 import { getClient } from "../config.ts/auth";
+import { userRepository } from "../repositories/userRepository";
+import { User } from "../entities/User";
+import jwt from "jsonwebtoken";
+import { UserRequest } from "../types/types";
+import { signAccessToken, signRefreshToken } from "../helpers/jwt";
 
 const code_verifier = generators.codeVerifier();
 
@@ -35,17 +40,139 @@ export const authCallback = async (req: Request, res: Response) => {
 			params,
 			{ code_verifier },
 		);
-		const access_token = tokenSet.access_token;
-		const refresh_token = tokenSet.refresh_token;
-		const userInfo = await client.userinfo(access_token as string | TokenSet);
+		let accessToken = tokenSet.access_token;
 
-		console.log(userInfo);
+		const userInfo = await client.userinfo(accessToken as string | TokenSet);
 
-		res.redirect(`${process.env.FRONTEND_URL}/user/dashboard`);
+		let user: any = await userRepository
+			.createQueryBuilder("user")
+			.where("user.email=:email", { email: userInfo.email })
+			.getOne();
+		let id: string;
+
+		if (!user) {
+			user = await userRepository
+				.createQueryBuilder()
+				.insert()
+				.into(User)
+				.values({
+					name: userInfo.name,
+					email: userInfo.email,
+					profile: userInfo.picture,
+				})
+				.execute();
+
+			id = user.raw[0].id;
+		} else {
+			id = user.id;
+		}
+		accessToken = signAccessToken(id, "user");
+		const refreshToken = signRefreshToken(id, "user");
+		console.log(accessToken);
+		console.log(refreshToken);
+		res.clearCookie("accessToken");
+		res.clearCookie("refreshToken");
+
+		res.cookie("accessToken", accessToken, {
+			httpOnly: true,
+			secure: false,
+			sameSite: "none",
+			maxAge: 1 * 60 * 60 * 1000,
+		});
+
+		res.cookie("refreshToken", refreshToken, {
+			httpOnly: true,
+			secure: false,
+			sameSite: "none",
+			maxAge: 1 * 60 * 60 * 1000,
+		});
+
+		return res.redirect(`${process.env.FRONTEND_URL}/user/dashboard`);
+	} catch (err) {
+		return res
+			.status(500)
+			.json({ status: "failed", message: "Error while authenticating user" });
+	}
+};
+
+export const userProtect = async (req: UserRequest, res: Response, next) => {
+	try {
+		const accessToken = req.cookies.accessToken;
+		if (!accessToken) {
+			return res
+				.status(403)
+				.json({ status: "success", message: "Login and try again" });
+		}
+		const decoded = jwt.verify(accessToken, process.env.ACCESS_SECRET);
+		if (!decoded.id) {
+			return res
+				.status(500)
+				.json({ status: "failed", message: "Internal Server Error" });
+		}
+		const user = await userRepository
+			.createQueryBuilder("user")
+			.where("user.id=:id", { id: decoded.id })
+			.getOne();
+
+		req.user = user;
+		next();
+	} catch (err) {
+		console.log(err);
+		return res.status(403).json({ status: "failed", message: "Unauthorised" });
+	}
+};
+
+export const getUser = async (req: UserRequest, res: Response) => {
+	try {
+		return res.status(200).json({ status: "success", user: req.user });
 	} catch (err) {
 		console.log(err);
 		return res
 			.status(500)
-			.json({ status: "failed", message: "Error while authenticating user" });
+			.json({ status: "failed", message: "Internal server error" });
+	}
+};
+
+export const userUpdate = async (req: UserRequest, res: Response) => {
+	try {
+		const { name, phoneNumber } = req.body;
+		if (Number.isNaN(phoneNumber)) {
+			return res
+				.status(400)
+				.json({ status: "failed", message: "Phone number has to be a number" });
+		}
+		await userRepository
+			.createQueryBuilder()
+			.update(User)
+			.set({ name, phoneNumber: +phoneNumber })
+			.where("id=:id", { id: req.user.id })
+			.execute();
+		return res
+			.status(200)
+			.json({ status: "success", message: "User updated successfully" });
+	} catch (err) {
+		console.log(err);
+		return res
+			.status(500)
+			.json({ status: "failed", message: "Internal server error" });
+	}
+};
+
+export const userDelete = async (req: UserRequest, res: Response) => {
+	try {
+		await userRepository
+			.createQueryBuilder()
+			.delete()
+			.from(User)
+			.where("id=:id", { id: req.user.id })
+			.execute();
+		return res
+			.status(204)
+			.json({ status: "success", message: "Deleted successfully" });
+	} catch (err) {
+		console.log(err);
+		return res
+			.status(500)
+			.json({ status: "failed", message: "Error while deleting owner" });
 	}
 };
