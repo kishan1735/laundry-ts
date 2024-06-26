@@ -12,7 +12,7 @@ const userRouter = express.Router();
 userRouter.get("/get", userProtect, getUser);
 userRouter.patch("/update", userProtect, userUpdate);
 userRouter.delete("/delete", userProtect, userDelete);
-userRouter.get("/shop", getAllShops);
-userRouter.get("/shop/:id/get", getShopById);
+userRouter.get("/shop", userProtect, getAllShops);
+userRouter.get("/shop/:id/get", userProtect, getShopById);
 
 export default userRouter;
