@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 function UShop() {
 	const { id } = useParams();
@@ -84,6 +84,12 @@ function UShop() {
 								{data.data.shop.unsatisfied}
 							</h1>
 						</div>
+						<Link
+							className="bg-white mx-16 py-1 text-lg font-bold uppercase hover:scale-110 duration-400 px-8 text-center"
+							to={`/user/shop/${id}/laundry`}
+						>
+							Laundry
+						</Link>
 					</>
 				) : (
 					<h1 className="text-white text-2xl uppercase mb-2 mx-auto">

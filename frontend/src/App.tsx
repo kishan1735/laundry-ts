@@ -23,6 +23,8 @@ import UProfile from "./pages/user/UProfile";
 import UUpdate from "./pages/user/UUpdate";
 import UShops from "./pages/user/UShops";
 import UShop from "./pages/user/UShop";
+import UShopLaundry from "./pages/user/UShopLaundry";
+import ULaundryCreate from "./pages/user/ULaundryCreate";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +58,11 @@ function App() {
 					<Route element={<UUpdate />} path="/user/profile/update" />
 					<Route element={<UShops />} path="/user/shop" />
 					<Route element={<UShop />} path="/user/shop/:id" />
+					<Route element={<UShopLaundry />} path="/user/shop/:id/laundry" />
+					<Route
+						element={<ULaundryCreate />}
+						path="/user/shop/:id/laundry/create"
+					/>
 				</Routes>
 			</BrowserRouter>
 			<Toaster position="top-center" />

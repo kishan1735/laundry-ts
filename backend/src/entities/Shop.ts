@@ -3,11 +3,13 @@ import {
 	Entity,
 	JoinColumn,
 	ManyToOne,
+	OneToMany,
 	OneToOne,
 	PrimaryGeneratedColumn,
 } from "typeorm";
 import { Price } from "./Price";
 import { Owner } from "./Owner";
+import { Laundry } from "./Laundry";
 
 @Entity()
 export class Shop {
@@ -34,6 +36,12 @@ export class Shop {
 		(owner) => owner.shops,
 	)
 	owner!: Owner;
+
+	@OneToMany(
+		() => Laundry,
+		(laundry) => laundry.shop,
+	)
+	laundry!: Laundry[];
 
 	@OneToOne(() => Price)
 	@JoinColumn()

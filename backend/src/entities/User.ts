@@ -1,4 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Laundry } from "./Laundry";
 
 @Entity()
 export class User {
@@ -21,4 +22,10 @@ export class User {
 		nullable: true,
 	})
 	phoneNumber!: number;
+
+	@OneToMany(
+		() => Laundry,
+		(laundry) => laundry.user,
+	)
+	laundry!: Laundry[];
 }
