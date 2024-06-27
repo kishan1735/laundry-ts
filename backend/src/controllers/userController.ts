@@ -98,7 +98,7 @@ export const authCallback = async (req: Request, res: Response) => {
 export const userProtect = async (req: UserRequest, res: Response, next) => {
 	try {
 		const accessToken =
-			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRhZmExNjVlLWI0ZGQtNDNhYy1hNDc5LTJmODQwZDVjNDhiNCIsInR5cGUiOiJhY2Nlc3MiLCJ1c2VyVHlwZSI6InVzZXIiLCJpYXQiOjE3MTk0NzAwNzcsImV4cCI6MTcxOTQ4MDg3NywiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwIn0.6N7Wrhm-KShu7BMPDAtraNRm9JRLjpcyQ0irR4xXiU8";
+			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRhZmExNjVlLWI0ZGQtNDNhYy1hNDc5LTJmODQwZDVjNDhiNCIsInR5cGUiOiJhY2Nlc3MiLCJ1c2VyVHlwZSI6InVzZXIiLCJpYXQiOjE3MTk1MDM0NzcsImV4cCI6MTcxOTUxNDI3NywiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwIn0.VCssnA3FGCYJgLc4vh4uz40QONkRHYdQWcMy-A1fJLo";
 		if (!accessToken) {
 			return res
 				.status(403)

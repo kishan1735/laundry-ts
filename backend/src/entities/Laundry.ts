@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Shop } from "./Shop";
 import { User } from "./User";
+import { OrderStatus } from "../types/types";
 
 @Entity()
 export class Laundry {
@@ -25,8 +26,11 @@ export class Laundry {
 	@Column({ type: "smallint", default: 0 })
 	bedsheet!: number;
 
-	@Column({ type: "enum", enum: ["placed", "accepted", "ready", "delivered"] })
-	status!: ["placed", "accepted", "ready", "delivered"];
+	@Column({ type: "smallint", default: 0 })
+	cost!: number;
+
+	@Column({ type: "enum", enum: OrderStatus })
+	status!: OrderStatus;
 
 	@ManyToOne(
 		() => Shop,

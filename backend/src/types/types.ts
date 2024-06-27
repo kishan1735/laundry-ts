@@ -19,3 +19,10 @@ export interface UserRequest extends Request {
 		phoneNumber?: number;
 	};
 }
+
+export enum OrderStatus {
+	Placed = "placed",
+	Accepted = "accepted",
+	Ready = "ready",
+	Delivered = "delivered",
+}

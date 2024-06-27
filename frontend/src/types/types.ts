@@ -46,3 +46,12 @@ export interface ShopPriceType {
 		bedsheet: number;
 	};
 }
+
+export interface LaundryType {
+	tshirt: number;
+	shirt: number;
+	shorts: number;
+	pant: number;
+	towel: number;
+	bedsheet: number;
+}
