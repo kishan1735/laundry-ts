@@ -1,11 +1,17 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+	Column,
+	CreateDateColumn,
+	Entity,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+} from "typeorm";
 import { Shop } from "./Shop";
 import { User } from "./User";
 import { OrderStatus } from "../types/types";
 
 @Entity()
 export class Laundry {
-	@PrimaryGeneratedColumn("uuid")
+	@PrimaryGeneratedColumn("increment")
 	id!: string;
 
 	@Column({ type: "smallint", default: 0 })
@@ -43,4 +49,11 @@ export class Laundry {
 		(user) => user.laundry,
 	)
 	user!: User;
+
+	@CreateDateColumn({
+		name: "created_at",
+		type: "timestamptz",
+		default: () => "CURRENT_TIMESTAMP",
+	})
+	createdAt!: Date;
 }

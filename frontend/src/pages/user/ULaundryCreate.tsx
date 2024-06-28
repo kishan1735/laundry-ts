@@ -37,11 +37,12 @@ function ULaundryCreate() {
 			return axios.post(
 				`http://127.0.0.1:8000/api/user/shop/${id}/laundry/create`,
 				data,
+				{ withCredentials: true },
 			);
 		},
 		onSuccess: () => {
 			toast.success("Laundry created successfully");
-			queryClient.invalidateQueries({ queryKey: ["laundry"] });
+			queryClient.invalidateQueries({ queryKey: [`user_shop_laundry ${id}`] });
 			navigate(`/user/shop/${id}/laundry`);
 		},
 		onError: (err: AxiosError<ErrorResponse>) => {

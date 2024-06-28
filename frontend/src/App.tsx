@@ -25,6 +25,7 @@ import UShops from "./pages/user/UShops";
 import UShop from "./pages/user/UShop";
 import UShopLaundry from "./pages/user/UShopLaundry";
 import ULaundryCreate from "./pages/user/ULaundryCreate";
+import ULaundry from "./pages/user/ULaundry";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,7 @@ function App() {
 						element={<ULaundryCreate />}
 						path="/user/shop/:id/laundry/create"
 					/>
+					<Route element={<ULaundry />} path="/user/laundry/:laundryId" />
 				</Routes>
 			</BrowserRouter>
 			<Toaster position="top-center" />
