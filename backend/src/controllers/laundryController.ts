@@ -78,6 +78,21 @@ export const getUserShopLaundry = async (req: UserRequest, res: Response) => {
 	}
 };
 
+export const getUserLaundry = async (req: UserRequest, res: Response) => {
+	try {
+		const laundry = await laundryRepository
+			.createQueryBuilder("laundry")
+			.leftJoinAndSelect("laundry.user", "user")
+			.where("user.id=:userId", { userId: req.user.id })
+			.getMany();
+		return res.status(200).json({ status: "success", laundry });
+	} catch (err) {
+		return res
+			.status(500)
+			.json({ status: "failed", message: "Failed to get user laundry" });
+	}
+};
+
 export const getLaundryById = async (req: Request, res: Response) => {
 	try {
 		const { laundryId } = req.params;

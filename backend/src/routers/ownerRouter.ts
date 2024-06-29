@@ -2,7 +2,6 @@ import express from "express";
 import {
 	forgotPassword,
 	getOwner,
-	logout,
 	ownerDelete,
 	ownerLogin,
 	ownerProtect,
@@ -22,7 +21,7 @@ const ownerRouter = express.Router();
 
 ownerRouter.post("/signup", ownerSignup);
 ownerRouter.post("/login", ownerLogin);
-ownerRouter.get("/logout", logout);
+
 ownerRouter.post("/forgotpassword", forgotPassword);
 ownerRouter.post("/resetpassword", resetPassword);
 ownerRouter.get("/get", ownerProtect, getOwner);

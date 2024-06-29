@@ -9,6 +9,7 @@ import { getAllShops, getShopById } from "../controllers/shopController";
 import {
 	createLaundry,
 	getLaundryById,
+	getUserLaundry,
 	getUserShopLaundry,
 } from "../controllers/laundryController";
 
@@ -21,5 +22,6 @@ userRouter.get("/shop", userProtect, getAllShops);
 userRouter.get("/shop/:id/get", userProtect, getShopById);
 userRouter.get("/shop/:id/laundry/get", userProtect, getUserShopLaundry);
 userRouter.post("/shop/:id/laundry/create", userProtect, createLaundry);
+userRouter.get("/laundry/get", userProtect, getUserLaundry);
 userRouter.get("/laundry/:laundryId", userProtect, getLaundryById);
 export default userRouter;

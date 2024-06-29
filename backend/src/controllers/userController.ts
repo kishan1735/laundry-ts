@@ -4,7 +4,7 @@ import { getClient } from "../config.ts/auth";
 import { userRepository } from "../repositories/userRepository";
 import { User } from "../entities/User";
 import jwt from "jsonwebtoken";
-import { UserRequest } from "../types/types";
+import type { UserRequest } from "../types/types";
 import { signAccessToken, signRefreshToken } from "../helpers/jwt";
 
 const code_verifier = generators.codeVerifier();
@@ -98,7 +98,13 @@ export const authCallback = async (req: Request, res: Response) => {
 export const userProtect = async (req: UserRequest, res: Response, next) => {
 	try {
 		const accessToken =
-			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRhZmExNjVlLWI0ZGQtNDNhYy1hNDc5LTJmODQwZDVjNDhiNCIsInR5cGUiOiJhY2Nlc3MiLCJ1c2VyVHlwZSI6InVzZXIiLCJpYXQiOjE3MTk1MDM0NzcsImV4cCI6MTcxOTUxNDI3NywiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwIn0.VCssnA3FGCYJgLc4vh4uz40QONkRHYdQWcMy-A1fJLo";
+			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRhZmExNjVlLWI0ZGQtNDNhYy1hNDc5LTJmODQwZDVjNDhiNCIsInR5cGUiOiJhY2Nlc3MiLCJ1c2VyVHlwZSI6InVzZXIiLCJpYXQiOjE3MTk2Nzk1NzMsImV4cCI6MTcxOTY5MDM3MywiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwIn0.G0gIYsRoytkJtmj54on5LZp6S77j0mj8Xc_Fatr6NlY";
+		res.cookie("accessToken", accessToken, {
+			httpOnly: true,
+			secure: false,
+			sameSite: "none",
+			maxAge: 1 * 60 * 60 * 1000,
+		});
 		if (!accessToken) {
 			return res
 				.status(403)

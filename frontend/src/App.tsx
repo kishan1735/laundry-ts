@@ -26,6 +26,7 @@ import UShop from "./pages/user/UShop";
 import UShopLaundry from "./pages/user/UShopLaundry";
 import ULaundryCreate from "./pages/user/ULaundryCreate";
 import ULaundry from "./pages/user/ULaundry";
+import ULaundrys from "./pages/user/ULaundrys";
 
 const queryClient = new QueryClient();
 
@@ -43,28 +44,29 @@ function App() {
 					<Route element={<OResetPassword />} path="/owner/resetpassword" />
 					<Route element={<User />} path="/user" />
 					<Route element={<ULogin />} path="/user/login" />
-				</Routes>
-				<Routes>
-					<Route element={<ODashboard />} path="/owner/dashboard" />
-					<Route element={<OProfile />} path="/owner/profile" />
-					<Route element={<OUpdate />} path="/owner/profile/update" />
-					<Route element={<OShops />} path="/owner/shop" />
-					<Route element={<OShopCreate />} path="/owner/shop/create" />
-					<Route element={<OShop />} path="/owner/shop/:id" />
-					<Route element={<OShopUpdate />} path="/owner/shop/:id/update" />
-				</Routes>
-				<Routes>
-					<Route element={<UDashboard />} path="/user/dashboard" />
-					<Route element={<UProfile />} path="/user/profile" />
-					<Route element={<UUpdate />} path="/user/profile/update" />
-					<Route element={<UShops />} path="/user/shop" />
-					<Route element={<UShop />} path="/user/shop/:id" />
-					<Route element={<UShopLaundry />} path="/user/shop/:id/laundry" />
-					<Route
-						element={<ULaundryCreate />}
-						path="/user/shop/:id/laundry/create"
-					/>
-					<Route element={<ULaundry />} path="/user/laundry/:laundryId" />
+					<Route element={<Protect type="owner" />}>
+						<Route element={<ODashboard />} path="/owner/dashboard" />
+						<Route element={<OProfile />} path="/owner/profile" />
+						<Route element={<OUpdate />} path="/owner/profile/update" />
+						<Route element={<OShops />} path="/owner/shop" />
+						<Route element={<OShopCreate />} path="/owner/shop/create" />
+						<Route element={<OShop />} path="/owner/shop/:id" />
+						<Route element={<OShopUpdate />} path="/owner/shop/:id/update" />
+					</Route>
+					<Route element={<Protect type="user" />}>
+						<Route element={<UDashboard />} path="/user/dashboard" />
+						<Route element={<UProfile />} path="/user/profile" />
+						<Route element={<UUpdate />} path="/user/profile/update" />
+						<Route element={<UShops />} path="/user/shop" />
+						<Route element={<UShop />} path="/user/shop/:id" />
+						<Route element={<UShopLaundry />} path="/user/shop/:id/laundry" />
+						<Route
+							element={<ULaundryCreate />}
+							path="/user/shop/:id/laundry/create"
+						/>
+						<Route element={<ULaundry />} path="/user/laundry/:laundryId" />
+						<Route element={<ULaundrys />} path="/user/laundry" />
+					</Route>
 				</Routes>
 			</BrowserRouter>
 			<Toaster position="top-center" />

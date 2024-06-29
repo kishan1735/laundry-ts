@@ -1,19 +1,35 @@
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
-import { useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
-function Protect({ type, children }) {
-	const [cookies] = useCookies(["access_token", "refresh_token"]);
+function Protect({ type }) {
 	const [protect, setProtect] = useState(false);
-	const navigate = useNavigate();
+	const { data, status } = useQuery({
+		queryKey: ["type"],
+		queryFn: () => {
+			return axios.get("http://127.0.0.1:8000/auth/type", {
+				withCredentials: true,
+			});
+		},
+	});
+	console.log(data);
 	useEffect(() => {
-		if (!cookies.access_token || !cookies.refresh_token) {
-			navigate(`/${type}/login`);
-		} else {
+		if (
+			status === "success" &&
+			data.data.status === "success" &&
+			data.data.type === type
+		) {
+			console.log(data);
 			setProtect(true);
 		}
-	}, [cookies.access_token, cookies.refresh_token, type, navigate]);
-	if (protect) return <>{children}</>;
+	}, [data, setProtect, status, type]);
+	if (protect)
+		return (
+			<>
+				<Outlet />
+			</>
+		);
 }
 
 export default Protect;
