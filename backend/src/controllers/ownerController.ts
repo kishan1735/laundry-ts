@@ -4,9 +4,14 @@ import jwt from "jsonwebtoken";
 import crypto from "node:crypto";
 import { ownerRepository } from "../repositories/ownerRepository";
 import { Owner } from "../entities/Owner";
-import { signRefreshToken, signAccessToken } from "../helpers/jwt";
+import {
+	signRefreshToken,
+	signAccessToken,
+	isJwtExpired,
+} from "../helpers/jwt";
 import type { OwnerRequest } from "../types/types";
 import { transporter } from "../config.ts/nodemailer";
+import { newToken } from "./authController";
 
 export const ownerSignup = async (req: Request, res: Response) => {
 	try {
@@ -106,13 +111,42 @@ export const ownerLogin = async (req: Request, res: Response) => {
 
 export const ownerProtect = async (req: OwnerRequest, res: Response, next) => {
 	try {
-		const accessToken = req.cookies.accessToken;
+		let accessToken = req.cookies.accessToken;
 		if (!accessToken) {
 			return res
 				.status(403)
 				.json({ status: "success", message: "Login and try again" });
 		}
-		const decoded = jwt.verify(accessToken, process.env.ACCESS_SECRET);
+		if (isJwtExpired(accessToken)) {
+			const refreshToken = req.cookies.refreshToken;
+			if (!refreshToken) {
+				return res
+					.status(403)
+					.json({ status: "failed", message: "Login and try again" });
+			}
+			const decodedRefresh = jwt.verify(
+				refreshToken,
+				process.env.REFRESH_SECRET,
+			);
+			if (!decodedRefresh) {
+				return res
+					.status(403)
+					.json({ status: "failed", message: "Invalid JWT" });
+			}
+			accessToken = await signAccessToken(
+				decodedRefresh.id,
+				decodedRefresh.userType,
+			);
+			res.clearCookie("accessToken");
+			res.cookie("accessToken", accessToken, {
+				httpOnly: true,
+				secure: false,
+				sameSite: "none",
+				maxAge: 1 * 60 * 60 * 1000,
+			});
+		}
+		const decoded = await jwt.verify(accessToken, process.env.ACCESS_SECRET);
+
 		if (!decoded.id) {
 			return res
 				.status(500)

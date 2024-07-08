@@ -5,7 +5,11 @@ import { userRepository } from "../repositories/userRepository";
 import { User } from "../entities/User";
 import jwt from "jsonwebtoken";
 import type { UserRequest } from "../types/types";
-import { signAccessToken, signRefreshToken } from "../helpers/jwt";
+import {
+	isJwtExpired,
+	signAccessToken,
+	signRefreshToken,
+} from "../helpers/jwt";
 
 const code_verifier = generators.codeVerifier();
 
@@ -84,7 +88,7 @@ export const authCallback = async (req: Request, res: Response) => {
 			httpOnly: true,
 			secure: false,
 			sameSite: "none",
-			maxAge: 1 * 60 * 60 * 1000,
+			maxAge: 30 * 60 * 60 * 1000,
 		});
 
 		return res.redirect(`${process.env.FRONTEND_URL}/user/dashboard`);
@@ -97,20 +101,77 @@ export const authCallback = async (req: Request, res: Response) => {
 
 export const userProtect = async (req: UserRequest, res: Response, next) => {
 	try {
-		const accessToken =
-			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRhZmExNjVlLWI0ZGQtNDNhYy1hNDc5LTJmODQwZDVjNDhiNCIsInR5cGUiOiJhY2Nlc3MiLCJ1c2VyVHlwZSI6InVzZXIiLCJpYXQiOjE3MTk2Nzk1NzMsImV4cCI6MTcxOTY5MDM3MywiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwIn0.G0gIYsRoytkJtmj54on5LZp6S77j0mj8Xc_Fatr6NlY";
-		res.cookie("accessToken", accessToken, {
-			httpOnly: true,
-			secure: false,
-			sameSite: "none",
-			maxAge: 1 * 60 * 60 * 1000,
-		});
+		let accessToken = req.cookies.accessToken;
 		if (!accessToken) {
 			return res
 				.status(403)
 				.json({ status: "success", message: "Login and try again" });
 		}
-		const decoded = jwt.verify(accessToken, process.env.ACCESS_SECRET);
+		if (isJwtExpired(accessToken)) {
+			const refreshToken = req.cookies.refreshToken;
+			if (!refreshToken) {
+				return res
+					.status(403)
+					.json({ status: "failed", message: "Login and try again" });
+			}
+			const decodedRefresh = jwt.verify(
+				refreshToken,
+				process.env.REFRESH_SECRET,
+			);
+			if (!decodedRefresh) {
+				return res
+					.status(403)
+					.json({ status: "failed", message: "Invalid JWT" });
+			}
+			accessToken = await signAccessToken(
+				decodedRefresh.id,
+				decodedRefresh.userType,
+			);
+			res.clearCookie("accessToken");
+			res.cookie("accessToken", accessToken, {
+				httpOnly: true,
+				secure: false,
+				sameSite: "none",
+				maxAge: 1 * 60 * 60 * 1000,
+			});
+		}
+		let decoded: { id: string; type: string };
+		try {
+			decoded = await jwt.verify(accessToken, process.env.ACCESS_SECRET);
+		} catch (err) {
+			console.log(err.message, accessToken);
+			if (err.message === "jwt expired") {
+				const refreshToken = req.cookies.refreshToken;
+				if (!refreshToken) {
+					return res
+						.status(403)
+						.json({ status: "failed", message: "Login and try again" });
+				}
+				const decodedRefresh = jwt.verify(
+					refreshToken,
+					process.env.REFRESH_SECRET,
+				);
+				if (!decodedRefresh) {
+					return res
+						.status(403)
+						.json({ status: "failed", message: "Invalid JWT" });
+				}
+				const accessToken = await signAccessToken(
+					decodedRefresh.id,
+					decodedRefresh.userType,
+				);
+				res.clearCookie("accessToken");
+				res.cookie("accessToken", accessToken, {
+					httpOnly: true,
+					secure: false,
+					sameSite: "none",
+					maxAge: 1 * 60 * 60 * 1000,
+				});
+				decoded = await jwt.verify(accessToken, process.env.ACCESS_SECRET);
+			} else {
+				throw new Error(err);
+			}
+		}
 		if (!decoded.id) {
 			return res
 				.status(500)
