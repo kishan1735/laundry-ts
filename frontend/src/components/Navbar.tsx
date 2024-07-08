@@ -9,7 +9,7 @@ function Navbar({ type }: { type: string }) {
 	const queryClient = useQueryClient();
 	const { mutate } = useMutation({
 		mutationFn: () => {
-			return axios.get("http://127.0.0.1:8000/api/auth/logout", {
+			return axios.get("http://127.0.0.1:8000/auth/logout", {
 				withCredentials: true,
 			});
 		},

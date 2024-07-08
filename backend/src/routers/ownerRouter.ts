@@ -16,12 +16,16 @@ import {
 	getShopById,
 	updateShop,
 } from "../controllers/shopController";
+import {
+	getLaundryById,
+	getShopLaundry,
+	updateStatus,
+} from "../controllers/laundryController";
 
 const ownerRouter = express.Router();
 
 ownerRouter.post("/signup", ownerSignup);
 ownerRouter.post("/login", ownerLogin);
-
 ownerRouter.post("/forgotpassword", forgotPassword);
 ownerRouter.post("/resetpassword", resetPassword);
 ownerRouter.get("/get", ownerProtect, getOwner);
@@ -32,5 +36,8 @@ ownerRouter.post("/shop/create", ownerProtect, createShop);
 ownerRouter.get("/shop/:id/get", ownerProtect, getShopById);
 ownerRouter.patch("/shop/:id/update", ownerProtect, updateShop);
 ownerRouter.delete("/shop/:id/delete", ownerProtect, deleteShop);
+ownerRouter.get("/shop/:id/laundry/get", ownerProtect, getShopLaundry);
+ownerRouter.get("/laundry/:id", ownerProtect, getLaundryById);
+ownerRouter.patch("/laundry/:id/status/update", ownerProtect, updateStatus);
 
 export default ownerRouter;

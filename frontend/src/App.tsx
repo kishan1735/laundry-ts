@@ -27,6 +27,8 @@ import UShopLaundry from "./pages/user/UShopLaundry";
 import ULaundryCreate from "./pages/user/ULaundryCreate";
 import ULaundry from "./pages/user/ULaundry";
 import ULaundrys from "./pages/user/ULaundrys";
+import OShopLaundry from "./pages/owner/OShopLaundry";
+import OLaundry from "./pages/owner/OLaundry";
 
 const queryClient = new QueryClient();
 
@@ -44,17 +46,22 @@ function App() {
 					<Route element={<OResetPassword />} path="/owner/resetpassword" />
 					<Route element={<User />} path="/user" />
 					<Route element={<ULogin />} path="/user/login" />
+					<Route element={<UDashboard />} path="/user/dashboard" />
+					<Route element={<ODashboard />} path="/owner/dashboard" />
 					<Route element={<Protect type="owner" />}>
-						<Route element={<ODashboard />} path="/owner/dashboard" />
 						<Route element={<OProfile />} path="/owner/profile" />
 						<Route element={<OUpdate />} path="/owner/profile/update" />
 						<Route element={<OShops />} path="/owner/shop" />
 						<Route element={<OShopCreate />} path="/owner/shop/create" />
 						<Route element={<OShop />} path="/owner/shop/:id" />
 						<Route element={<OShopUpdate />} path="/owner/shop/:id/update" />
+						<Route element={<OShopLaundry />} path="/owner/shop/:id/laundry" />
+						<Route
+							element={<OLaundry />}
+							path="/owner/shop/:id/laundry/:laundryId"
+						/>
 					</Route>
 					<Route element={<Protect type="user" />}>
-						<Route element={<UDashboard />} path="/user/dashboard" />
 						<Route element={<UProfile />} path="/user/profile" />
 						<Route element={<UUpdate />} path="/user/profile/update" />
 						<Route element={<UShops />} path="/user/shop" />

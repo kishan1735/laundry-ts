@@ -93,17 +93,75 @@ export const getUserLaundry = async (req: UserRequest, res: Response) => {
 	}
 };
 
-export const getLaundryById = async (req: Request, res: Response) => {
+export const getShopLaundry = async (req: Request, res: Response) => {
 	try {
-		const { laundryId } = req.params;
+		const { id } = req.params;
 		const laundry = await laundryRepository
 			.createQueryBuilder("laundry")
-			.where("laundry.id=:id", { id: laundryId })
+			.leftJoinAndSelect("laundry.shop", "shop")
+			.where("shop.id=:id", { id })
+			.getMany();
+		return res.status(200).json({ status: "success", laundry });
+	} catch (err) {
+		return res
+			.status(500)
+			.json({ status: "failed", message: "Failed to get owner laundry" });
+	}
+};
+
+export const getLaundryById = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+		const laundry = await laundryRepository
+			.createQueryBuilder("laundry")
+			.where("laundry.id=:id", { id })
 			.getOne();
 		return res.status(200).json({ status: "success", laundry });
 	} catch (err) {
 		return res
 			.status(500)
 			.json({ status: "failed", message: "Failed to get user laundry" });
+	}
+};
+
+export const updateStatus = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+		const { status } = req.body;
+		console.log(status);
+		let newStatus: OrderStatus;
+		if (status === "placed") {
+			newStatus = OrderStatus.Accepted;
+			console.log(newStatus);
+		} else if (status === "accepted") {
+			newStatus = OrderStatus.Ready;
+		} else if (status === "ready") {
+			newStatus = OrderStatus.Delivered;
+		} else if (status === "delivered") {
+			await laundryRepository
+				.createQueryBuilder()
+				.delete()
+				.from(Laundry)
+				.where("laundry.id=:id", { id })
+				.execute();
+			return res
+				.status(204)
+				.json({ status: "success", message: "Delivered successfully" });
+		}
+		console.log(id);
+		await laundryRepository
+			.createQueryBuilder()
+			.update(Laundry)
+			.set({ status: newStatus })
+			.where("laundry.id=:id", { id })
+			.execute();
+
+		return res
+			.status(200)
+			.json({ status: "success", message: "Status updated successfully" });
+	} catch (err) {
+		return res
+			.status(500)
+			.json({ status: "failed", message: "Failed to update status" });
 	}
 };

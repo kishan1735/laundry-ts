@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 function OShop() {
 	const { id } = useParams();
@@ -19,7 +19,7 @@ function OShop() {
 	return (
 		<div
 			id="home"
-			className="min-h-screen h-full flex flex-col space-y-6 justify-center items-center"
+			className="min-h-screen h-full flex flex-col space-y-6 justify-center items-center pb-8"
 		>
 			<Navbar type="owner" />
 			<div className="bg-black opacity-80 flex flex-col px-12 py-8 space-y-4 border-2 border-slate-400">
@@ -85,15 +85,19 @@ function OShop() {
 								{data.data.shop.unsatisfied}
 							</h1>
 						</div>
-						<div className="flex">
-							<button
-								className="bg-white mx-16 py-1 text-lg font-bold uppercase hover:scale-110 duration-400 px-8"
-								onClick={() => navigate(`/owner/shop/${id}/update`)}
-								type="button"
-							>
-								Update Shop
-							</button>
-						</div>
+
+						<Link
+							className="bg-white mx-16 py-1 text-lg font-bold uppercase hover:scale-110 duration-400 px-8"
+							to={`/owner/shop/${id}/update`}
+						>
+							Update Shop
+						</Link>
+						<Link
+							className="bg-white mx-16 py-1 text-lg font-bold uppercase hover:scale-110 duration-400 px-8"
+							to={`/owner/shop/${id}/laundry`}
+						>
+							View Laundry
+						</Link>
 					</>
 				) : (
 					<h1 className="text-white text-2xl uppercase mb-2 mx-auto">
