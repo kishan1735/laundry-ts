@@ -10,7 +10,7 @@ import {
 	isJwtExpired,
 } from "../helpers/jwt";
 import type { OwnerRequest } from "../types/types";
-import { transporter } from "../config.ts/nodemailer";
+import { transporter } from "../config/nodemailer";
 
 export const ownerSignup = async (req: Request, res: Response) => {
 	try {
