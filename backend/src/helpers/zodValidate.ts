@@ -12,6 +12,7 @@ export const validate =
 			});
 			return next();
 		} catch (err) {
+			console.log(err);
 			const message = JSON.parse(err.message)
 				.map((el, i) => `${i + 1}: ${el.message}`)
 				.reduce(

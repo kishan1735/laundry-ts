@@ -12,14 +12,16 @@ import {
 	getUserLaundry,
 	getUserShopLaundry,
 } from "../controllers/laundryController";
+import { userUpdateValidator } from "../types/zodSchema/user";
+import { shopByIdValidator } from "../types/zodSchema/shop";
 
 const userRouter = express.Router();
 
 userRouter.get("/get", userProtect, getUser);
-userRouter.patch("/update", userProtect, userUpdate);
+userRouter.patch("/update", userProtect, userUpdateValidator, userUpdate);
 userRouter.delete("/delete", userProtect, userDelete);
 userRouter.get("/shop", userProtect, getAllShops);
-userRouter.get("/shop/:id/get", userProtect, getShopById);
+userRouter.get("/shop/:id/get", userProtect, shopByIdValidator, getShopById);
 userRouter.get("/shop/:id/laundry/get", userProtect, getUserShopLaundry);
 userRouter.post("/shop/:id/laundry/create", userProtect, createLaundry);
 userRouter.get("/laundry/get", userProtect, getUserLaundry);
