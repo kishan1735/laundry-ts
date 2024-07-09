@@ -176,11 +176,6 @@ export const getOwner = async (req: OwnerRequest, res: Response) => {
 export const updateOwner = async (req: OwnerRequest, res: Response) => {
 	try {
 		const { name, email, phoneNumber } = req.body;
-		if (Number.isNaN(phoneNumber)) {
-			return res
-				.status(400)
-				.json({ status: "failed", message: "Phone number has to be a number" });
-		}
 		await ownerRepository
 			.createQueryBuilder()
 			.update(Owner)

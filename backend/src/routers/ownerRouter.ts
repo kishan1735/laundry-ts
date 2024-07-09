@@ -21,15 +21,22 @@ import {
 	getShopLaundry,
 	updateStatus,
 } from "../controllers/laundryController";
+import {
+	forgotPasswordValidator,
+	ownerLoginValidator,
+	ownerSignupValidator,
+	ownerUpdateValidator,
+	resetPasswordValidator,
+} from "../types/zodSchema/owner";
 
 const ownerRouter = express.Router();
 
-ownerRouter.post("/signup", ownerSignup);
-ownerRouter.post("/login", ownerLogin);
-ownerRouter.post("/forgotpassword", forgotPassword);
-ownerRouter.post("/resetpassword", resetPassword);
+ownerRouter.post("/signup", ownerSignupValidator, ownerSignup);
+ownerRouter.post("/login", ownerLoginValidator, ownerLogin);
+ownerRouter.post("/forgotpassword", forgotPasswordValidator, forgotPassword);
+ownerRouter.post("/resetpassword", resetPasswordValidator, resetPassword);
 ownerRouter.get("/get", ownerProtect, getOwner);
-ownerRouter.patch("/update", ownerProtect, updateOwner);
+ownerRouter.patch("/update", ownerProtect, ownerUpdateValidator, updateOwner);
 ownerRouter.delete("/delete", ownerProtect, ownerDelete);
 ownerRouter.get("/shop", ownerProtect, getAllOwnerShops);
 ownerRouter.post("/shop/create", ownerProtect, createShop);
