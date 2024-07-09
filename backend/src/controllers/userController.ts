@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { generators, type TokenSet } from "openid-client";
-import { getClient } from "../config.ts/auth";
+import { getClient } from "../config/auth";
 import { userRepository } from "../repositories/userRepository";
 import { User } from "../entities/User";
 import jwt from "jsonwebtoken";
