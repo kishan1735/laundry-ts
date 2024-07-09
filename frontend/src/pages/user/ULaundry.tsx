@@ -13,7 +13,6 @@ function ULaundry() {
 			});
 		},
 	});
-	console.log(data);
 	return (
 		<div
 			id="home"

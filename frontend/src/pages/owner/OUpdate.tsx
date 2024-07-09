@@ -70,7 +70,6 @@ function OUpdate() {
 		updateMutate(data);
 	};
 	const handleDelete = () => {
-		console.log("hi");
 		deleteMutate();
 	};
 	return (

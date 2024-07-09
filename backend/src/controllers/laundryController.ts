@@ -128,11 +128,9 @@ export const updateStatus = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 		const { status } = req.body;
-		console.log(status);
 		let newStatus: OrderStatus;
 		if (status === "placed") {
 			newStatus = OrderStatus.Accepted;
-			console.log(newStatus);
 		} else if (status === "accepted") {
 			newStatus = OrderStatus.Ready;
 		} else if (status === "ready") {
@@ -148,7 +146,6 @@ export const updateStatus = async (req: Request, res: Response) => {
 				.status(204)
 				.json({ status: "success", message: "Delivered successfully" });
 		}
-		console.log(id);
 		await laundryRepository
 			.createQueryBuilder()
 			.update(Laundry)
