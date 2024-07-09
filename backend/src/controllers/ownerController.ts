@@ -11,7 +11,6 @@ import {
 } from "../helpers/jwt";
 import type { OwnerRequest } from "../types/types";
 import { transporter } from "../config.ts/nodemailer";
-import { newToken } from "./authController";
 
 export const ownerSignup = async (req: Request, res: Response) => {
 	try {
