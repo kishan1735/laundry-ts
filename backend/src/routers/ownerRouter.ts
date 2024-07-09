@@ -33,6 +33,10 @@ import {
 	shopCreateValidator,
 	shopUpdateValidator,
 } from "../types/zodSchema/shop";
+import {
+	laundryByIdValidator,
+	statusUpdateValidator,
+} from "../types/zodSchema/laundry";
 
 const ownerRouter = express.Router();
 
@@ -58,8 +62,23 @@ ownerRouter.delete(
 	shopByIdValidator,
 	deleteShop,
 );
-ownerRouter.get("/shop/:id/laundry/get", ownerProtect, getShopLaundry);
-ownerRouter.get("/laundry/:id", ownerProtect, getLaundryById);
-ownerRouter.patch("/laundry/:id/status/update", ownerProtect, updateStatus);
+ownerRouter.get(
+	"/shop/:id/laundry/get",
+	ownerProtect,
+	shopByIdValidator,
+	getShopLaundry,
+);
+ownerRouter.get(
+	"/laundry/:id",
+	ownerProtect,
+	laundryByIdValidator,
+	getLaundryById,
+);
+ownerRouter.patch(
+	"/laundry/:id/status/update",
+	ownerProtect,
+	statusUpdateValidator,
+	updateStatus,
+);
 
 export default ownerRouter;
