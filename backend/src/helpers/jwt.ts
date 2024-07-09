@@ -1,21 +1,18 @@
 import jwt from "jsonwebtoken";
+import { env } from "../config/schema";
 
 export const signAccessToken = (id: string, userType: string) => {
-	return jwt.sign({ id, type: "access", userType }, process.env.ACCESS_SECRET, {
+	return jwt.sign({ id, type: "access", userType }, env.ACCESS_SECRET, {
 		expiresIn: "1h",
-		issuer: process.env.API_DOMAIN,
+		issuer: env.API_DOMAIN,
 	});
 };
 
 export const signRefreshToken = (id: string, userType: string) => {
-	return jwt.sign(
-		{ id, type: "refresh", userType },
-		process.env.REFRESH_SECRET,
-		{
-			expiresIn: "7d",
-			issuer: process.env.API_DOMAIN,
-		},
-	);
+	return jwt.sign({ id, type: "refresh", userType }, env.REFRESH_SECRET, {
+		expiresIn: "7d",
+		issuer: env.API_DOMAIN,
+	});
 };
 
 export const isJwtExpired = (token) => {

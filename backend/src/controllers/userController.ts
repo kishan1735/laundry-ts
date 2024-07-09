@@ -10,6 +10,7 @@ import {
 	signAccessToken,
 	signRefreshToken,
 } from "../helpers/jwt";
+import { env } from "../config/schema";
 
 const code_verifier = generators.codeVerifier();
 
@@ -40,7 +41,7 @@ export const authCallback = async (req: Request, res: Response) => {
 		const params = client.callbackParams(req);
 
 		const tokenSet = await client.callback(
-			`${process.env.API_DOMAIN}/auth/callback`,
+			`${env.API_DOMAIN}/auth/callback`,
 			params,
 			{ code_verifier },
 		);
@@ -91,7 +92,7 @@ export const authCallback = async (req: Request, res: Response) => {
 			maxAge: 30 * 60 * 60 * 1000,
 		});
 
-		return res.redirect(`${process.env.FRONTEND_URL}/user/dashboard`);
+		return res.redirect(`${env.FRONTEND_URL}/user/dashboard`);
 	} catch (err) {
 		return res
 			.status(500)
@@ -114,10 +115,7 @@ export const userProtect = async (req: UserRequest, res: Response, next) => {
 					.status(403)
 					.json({ status: "failed", message: "Login and try again" });
 			}
-			const decodedRefresh = jwt.verify(
-				refreshToken,
-				process.env.REFRESH_SECRET,
-			);
+			const decodedRefresh = jwt.verify(refreshToken, env.REFRESH_SECRET);
 			if (!decodedRefresh) {
 				return res
 					.status(403)
@@ -137,7 +135,7 @@ export const userProtect = async (req: UserRequest, res: Response, next) => {
 		}
 		let decoded: { id: string; type: string };
 		try {
-			decoded = await jwt.verify(accessToken, process.env.ACCESS_SECRET);
+			decoded = await jwt.verify(accessToken, env.ACCESS_SECRET);
 		} catch (err) {
 			console.log(err.message, accessToken);
 			if (err.message === "jwt expired") {
@@ -147,10 +145,7 @@ export const userProtect = async (req: UserRequest, res: Response, next) => {
 						.status(403)
 						.json({ status: "failed", message: "Login and try again" });
 				}
-				const decodedRefresh = jwt.verify(
-					refreshToken,
-					process.env.REFRESH_SECRET,
-				);
+				const decodedRefresh = jwt.verify(refreshToken, env.REFRESH_SECRET);
 				if (!decodedRefresh) {
 					return res
 						.status(403)
@@ -167,7 +162,7 @@ export const userProtect = async (req: UserRequest, res: Response, next) => {
 					sameSite: "none",
 					maxAge: 1 * 60 * 60 * 1000,
 				});
-				decoded = await jwt.verify(accessToken, process.env.ACCESS_SECRET);
+				decoded = await jwt.verify(accessToken, env.ACCESS_SECRET);
 			} else {
 				throw new Error(err);
 			}

@@ -11,6 +11,7 @@ import {
 } from "../helpers/jwt";
 import type { OwnerRequest } from "../types/types";
 import { transporter } from "../config/nodemailer";
+import { env } from "node:process";
 
 export const ownerSignup = async (req: Request, res: Response) => {
 	try {
@@ -123,10 +124,7 @@ export const ownerProtect = async (req: OwnerRequest, res: Response, next) => {
 					.status(403)
 					.json({ status: "failed", message: "Login and try again" });
 			}
-			const decodedRefresh = jwt.verify(
-				refreshToken,
-				process.env.REFRESH_SECRET,
-			);
+			const decodedRefresh = jwt.verify(refreshToken, env.REFRESH_SECRET);
 			if (!decodedRefresh) {
 				return res
 					.status(403)
@@ -144,7 +142,7 @@ export const ownerProtect = async (req: OwnerRequest, res: Response, next) => {
 				maxAge: 1 * 60 * 60 * 1000,
 			});
 		}
-		const decoded = await jwt.verify(accessToken, process.env.ACCESS_SECRET);
+		const decoded = await jwt.verify(accessToken, env.ACCESS_SECRET);
 
 		if (!decoded.id) {
 			return res
@@ -237,7 +235,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 		owner.passwordResetToken = resetToken;
 		owner.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
 		const mailOptions = {
-			from: process.env.EMAIL,
+			from: env.EMAIL,
 			to: email,
 			subject: "Password Reset OTP",
 			html: `<h1>Your reset password</h1><p>${resetToken}</p>`,

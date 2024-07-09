@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import "dotenv/config";
+import { env } from "./schema";
 
 export const transporter = nodemailer.createTransport({
 	service: "Gmail",
@@ -7,7 +8,7 @@ export const transporter = nodemailer.createTransport({
 	port: 465,
 	secure: true,
 	auth: {
-		user: process.env.EMAIL,
-		pass: process.env.APP_PASSWORD,
+		user: env.EMAIL,
+		pass: env.APP_PASSWORD,
 	},
 });

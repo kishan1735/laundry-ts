@@ -6,9 +6,9 @@ import { AppDataSource } from "./db";
 import ownerRouter from "./routers/ownerRouter";
 import authRouter from "./routers/authRouter";
 import userRouter from "./routers/userRouter";
+import { env } from "./config/schema";
 
 const app = express();
-
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -25,7 +25,7 @@ app.use(
 			"Content-Description",
 		],
 		credentials: true,
-		origin: process.env.FRONTEND_URL,
+		origin: env.FRONTEND_URL,
 		methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
 		preflightContinue: false,
 	}),
@@ -36,9 +36,7 @@ app.use("/auth", authRouter);
 
 AppDataSource.initialize()
 	.then(async () => {
-		app.listen(process.env.BACKEND_PORT);
-		console.log(
-			`Express server has started on port ${process.env.BACKEND_PORT}`,
-		);
+		app.listen(env.BACKEND_PORT);
+		console.log(`Express server has started on port ${env.BACKEND_PORT}`);
 	})
 	.catch((error) => console.log(error));
