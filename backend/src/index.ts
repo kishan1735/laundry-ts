@@ -7,6 +7,7 @@ import ownerRouter from "./routers/ownerRouter";
 import authRouter from "./routers/authRouter";
 import userRouter from "./routers/userRouter";
 import { env } from "./config/schema";
+import "./config/rabbitmq";
 
 const app = express();
 app.use(express.json());

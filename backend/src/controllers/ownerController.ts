@@ -12,6 +12,7 @@ import {
 import type { OwnerRequest } from "../types/types";
 import { transporter } from "../config/nodemailer";
 import { env } from "node:process";
+import { sendVerificationMail } from "../config/rabbitmq";
 
 export const ownerSignup = async (req: Request, res: Response) => {
 	try {
@@ -229,22 +230,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
 		owner.passwordResetToken = resetToken;
 		owner.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
-		const mailOptions = {
-			from: env.EMAIL,
-			to: email,
-			subject: "Password Reset OTP",
-			html: `<h1>Your reset password</h1><p>${resetToken}</p>`,
-		};
-
-		transporter.sendMail(mailOptions, (error, info) => {
-			if (error) {
-				res
-					.status(500)
-					.json({ status: "failed", message: "Error while sending email" });
-			} else {
-				console.log("Email sent: ", info.response);
-			}
-		});
+		await sendVerificationMail(email, resetToken);
 		await ownerRepository.save(owner);
 		return res
 			.status(200)
