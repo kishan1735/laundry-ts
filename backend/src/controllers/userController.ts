@@ -73,11 +73,30 @@ export const authCallback = async (req: Request, res: Response) => {
 		}
 		accessToken = signAccessToken(id, "user");
 		const refreshToken = signRefreshToken(id, "user");
-		console.log(accessToken);
-		console.log(refreshToken);
+
 		res.clearCookie("accessToken");
 		res.clearCookie("refreshToken");
 
+		return res.redirect(`${env.FRONTEND_URL}/auth/${id}`);
+	} catch (err) {
+		return res
+			.status(500)
+			.json({ status: "failed", message: "Error while authenticating user" });
+	}
+};
+
+export const setRedirectCookies = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+		const accessToken = signAccessToken(id, "user");
+		const refreshToken = signRefreshToken(id, "user");
+		console.log(id);
+		if (!accessToken || !refreshToken)
+			return res
+				.status(403)
+				.json({ status: "failed", message: "Login and try again" });
+		res.clearCookie("accessToken");
+		res.clearCookie("refreshToken");
 		res.cookie("accessToken", accessToken, {
 			httpOnly: true,
 			secure: false,
@@ -91,24 +110,27 @@ export const authCallback = async (req: Request, res: Response) => {
 			sameSite: "none",
 			maxAge: 30 * 60 * 60 * 1000,
 		});
-
-		return res.redirect(`${env.FRONTEND_URL}/user/dashboard`);
+		return res.status(200).json({ status: "success" });
 	} catch (err) {
+		console.log(err);
 		return res
 			.status(500)
-			.json({ status: "failed", message: "Error while authenticating user" });
+			.json({ status: "failed", message: "Internal server error" });
 	}
 };
 
 export const userProtect = async (req: UserRequest, res: Response, next) => {
 	try {
 		let accessToken = req.cookies.accessToken;
+		const refreshToken = req.cookies.refreshToken;
+
 		if (!accessToken) {
 			return res
 				.status(403)
 				.json({ status: "success", message: "Login and try again" });
 		}
 		if (isJwtExpired(accessToken)) {
+			console.log("expired");
 			const refreshToken = req.cookies.refreshToken;
 			if (!refreshToken) {
 				return res
@@ -133,40 +155,9 @@ export const userProtect = async (req: UserRequest, res: Response, next) => {
 				maxAge: 1 * 60 * 60 * 1000,
 			});
 		}
-		let decoded: { id: string; type: string };
-		try {
-			decoded = await jwt.verify(accessToken, env.ACCESS_SECRET);
-		} catch (err) {
-			console.log(err.message, accessToken);
-			if (err.message === "jwt expired") {
-				const refreshToken = req.cookies.refreshToken;
-				if (!refreshToken) {
-					return res
-						.status(403)
-						.json({ status: "failed", message: "Login and try again" });
-				}
-				const decodedRefresh = jwt.verify(refreshToken, env.REFRESH_SECRET);
-				if (!decodedRefresh) {
-					return res
-						.status(403)
-						.json({ status: "failed", message: "Invalid JWT" });
-				}
-				const accessToken = await signAccessToken(
-					decodedRefresh.id,
-					decodedRefresh.userType,
-				);
-				res.clearCookie("accessToken");
-				res.cookie("accessToken", accessToken, {
-					httpOnly: true,
-					secure: false,
-					sameSite: "none",
-					maxAge: 1 * 60 * 60 * 1000,
-				});
-				decoded = await jwt.verify(accessToken, env.ACCESS_SECRET);
-			} else {
-				throw new Error(err);
-			}
-		}
+		console.log(env.ACCESS_SECRET);
+		const decoded = jwt.verify(accessToken, env.ACCESS_SECRET);
+
 		if (!decoded.id) {
 			return res
 				.status(500)

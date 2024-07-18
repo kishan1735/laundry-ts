@@ -29,6 +29,7 @@ import ULaundry from "./pages/user/ULaundry";
 import ULaundrys from "./pages/user/ULaundrys";
 import OShopLaundry from "./pages/owner/OShopLaundry";
 import OLaundry from "./pages/owner/OLaundry";
+import Temp from "./pages/user/Temp";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ function App() {
 					<Route element={<OResetPassword />} path="/owner/resetpassword" />
 					<Route element={<User />} path="/user" />
 					<Route element={<ULogin />} path="/user/login" />
+					<Route element={<Temp />} path="/auth/:id" />
 					<Route element={<UDashboard />} path="/user/dashboard" />
 					<Route element={<ODashboard />} path="/owner/dashboard" />
 					<Route element={<Protect type="owner" />}>

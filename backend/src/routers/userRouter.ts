@@ -1,6 +1,7 @@
 import express from "express";
 import {
 	getUser,
+	setRedirectCookies,
 	userDelete,
 	userProtect,
 	userUpdate,
@@ -40,4 +41,5 @@ userRouter.get(
 	laundryByIdValidator,
 	getLaundryById,
 );
+
 export default userRouter;
