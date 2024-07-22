@@ -155,7 +155,6 @@ export const userProtect = async (req: UserRequest, res: Response, next) => {
 				maxAge: 1 * 60 * 60 * 1000,
 			});
 		}
-		console.log(env.ACCESS_SECRET);
 		const decoded = jwt.verify(accessToken, env.ACCESS_SECRET);
 
 		if (!decoded.id) {
