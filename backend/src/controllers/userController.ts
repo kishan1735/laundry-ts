@@ -99,14 +99,14 @@ export const setRedirectCookies = async (req: Request, res: Response) => {
 		res.clearCookie("refreshToken");
 		res.cookie("accessToken", accessToken, {
 			httpOnly: true,
-			secure: false,
+			secure: env.NODE_ENV === "production",
 			sameSite: "none",
 			maxAge: 1 * 60 * 60 * 1000,
 		});
 
 		res.cookie("refreshToken", refreshToken, {
 			httpOnly: true,
-			secure: false,
+			secure: env.NODE_ENV === "production",
 			sameSite: "none",
 			maxAge: 30 * 60 * 60 * 1000,
 		});
@@ -150,7 +150,7 @@ export const userProtect = async (req: UserRequest, res: Response, next) => {
 			res.clearCookie("accessToken");
 			res.cookie("accessToken", accessToken, {
 				httpOnly: true,
-				secure: false,
+				secure: env.NODE_ENV === "production",
 				sameSite: "none",
 				maxAge: 1 * 60 * 60 * 1000,
 			});
